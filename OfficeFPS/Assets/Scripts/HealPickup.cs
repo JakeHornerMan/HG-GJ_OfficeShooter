@@ -12,7 +12,7 @@ public class HealPickup : MonoBehaviour
         Debug.Log($"HealPickup OnTriggerEnter {other.gameObject.name}. Tag: {other.gameObject.tag}");
         if (other.CompareTag("Player"))
         {
-            HealthShieldSystem healthSystem = other.GetComponent<HealthShieldSystem>();
+            HealthShieldSystem healthSystem = other.GetComponentInParent<HealthShieldSystem>();
             if (healthSystem != null)
             {
                 bool applied = false;
