@@ -5,7 +5,7 @@ using System.Collections;
 public class MouseMovement : MonoBehaviour
 {
     [Header("References")]
-    public Camera camera;
+    public Camera playerCamera;
     public PlayerMovement playerMovement;
 
     [Header("Input Settings")]
@@ -68,7 +68,7 @@ public class MouseMovement : MonoBehaviour
 
         float zRotation = HandleCameraTilt(playerMovement.moveX);
         
-        camera.transform.localRotation = Quaternion.Euler(xRotation, yRotation, zRotation);
+        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, yRotation, zRotation);
     }
 
     private float HandleCameraTilt(float moveX)
@@ -97,7 +97,7 @@ public class MouseMovement : MonoBehaviour
 
    private IEnumerator CameraBounce(float duration)
     {
-        Vector3 originalPosition = camera.transform.localPosition;
+        Vector3 originalPosition = playerCamera.transform.localPosition;
         Vector3 downPosition = originalPosition + Vector3.down * bounceDistance;
 
         float elapsed = 0f;
@@ -107,11 +107,11 @@ public class MouseMovement : MonoBehaviour
         {
             float t = elapsed / duration;
             float curveT = bounceCurve.Evaluate(t); // evaluate curve
-            camera.transform.localPosition = Vector3.Lerp(originalPosition, downPosition, curveT);
+            playerCamera.transform.localPosition = Vector3.Lerp(originalPosition, downPosition, curveT);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        camera.transform.localPosition = downPosition;
+        playerCamera.transform.localPosition = downPosition;
 
         // Move back up
         elapsed = 0f;
@@ -119,11 +119,11 @@ public class MouseMovement : MonoBehaviour
         {
             float t = elapsed / duration;
             float curveT = bounceCurve.Evaluate(t); // evaluate curve
-            camera.transform.localPosition = Vector3.Lerp(downPosition, originalPosition, curveT);
+            playerCamera.transform.localPosition = Vector3.Lerp(downPosition, originalPosition, curveT);
             elapsed += Time.deltaTime;
             yield return null;
         }
-        camera.transform.localPosition = originalPosition;
+        playerCamera.transform.localPosition = originalPosition;
 
         bounceCoroutine = null; // mark as finished
     }
