@@ -5,7 +5,8 @@ using System.Collections;
 public class MouseMovement : MonoBehaviour
 {
     [Header("References")]
-    public Camera playerCamera;
+    // public Camera playerCamera;
+    public GameObject playerCamera;
     public PlayerMovement playerMovement;
 
     [Header("Input Settings")]
@@ -68,7 +69,8 @@ public class MouseMovement : MonoBehaviour
 
         float zRotation = HandleCameraTilt(playerMovement.moveX);
         
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, yRotation, zRotation);
+        this.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
+        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, zRotation);
     }
 
     private float HandleCameraTilt(float moveX)

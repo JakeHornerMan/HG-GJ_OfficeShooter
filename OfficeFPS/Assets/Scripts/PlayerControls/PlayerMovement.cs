@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     public Transform box;
     public MouseMovement mouseMovement;
+    public HealthShieldSystem healthShieldSystem;
+
+    public HudManager hudManager;
 
     [Header("Movement Settings")]
     public float moveSpeed = 10f;
@@ -88,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         // Movement relative to player orientation
-        Vector3 move = playerCamera.transform.right * moveX + playerCamera.transform.forward * moveZ;
+        Vector3 move = this.transform.right * moveX + this.transform.forward * moveZ;
 
         Vector3 targetVelocity = move * moveSpeed;
         Vector3 velocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
@@ -99,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
-        Vector3 move = playerCamera.transform.right * moveX + playerCamera.transform.forward * moveZ;
+        Vector3 move = this.transform.right * moveX + this.transform.forward * moveZ;
         Vector3 targetVelocity = move * moveSpeedJump;
         Vector3 velocity = new Vector3(targetVelocity.x, jumpForce, targetVelocity.z);
         rb.linearVelocity = velocity;
@@ -120,32 +123,48 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator DodgeRoutine()
     {
         isDodging = true;
+        healthShieldSystem.isInvincible = true;
         Debug.Log($"Dodge started | isDodging: {isDodging}");
 
-        Vector3 moveDir = (playerCamera.transform.right * moveX + playerCamera.transform.forward * moveZ).normalized;
-        if (moveDir.sqrMagnitude < 0.1f)
-            moveDir = playerCamera.transform.forward;
+        hudManager.ShowDodgeHud();
 
-        moveDir.y = 0.05f; // slight vertical lift if needed
+        Vector3 moveDir = (this.transform.right * moveX + this.transform.forward * moveZ).normalized;
+        if (moveDir.sqrMagnitude < 0.1f)
+            moveDir = this.transform.forward;
+
+        moveDir.y = 0.01f; // slight vertical lift if needed
 
         float elapsed = 0f;
+        float baseFov = playerCamera.fieldOfView;
+        float targetFov = baseFov + 15f; // expanded FOV
 
         while (elapsed < dodgeDuration)
         {
             float t = elapsed / dodgeDuration;
-            float curveMultiplier = dodgeCurve.Evaluate(t); // value from curve
-            rb.linearVelocity = Vector3.zero; // reset momentum each frame for consistency
+
+            // ---- Movement force ----
+            float curveMultiplier = dodgeCurve.Evaluate(t);
+            rb.linearVelocity = Vector3.zero;
             rb.AddForce(moveDir * dodgeForce * curveMultiplier, ForceMode.VelocityChange);
+
+            // ---- Camera FOV ----
+            // Ease to 65 at midpoint, then back to 60
+            float fovCurve = Mathf.Sin(t * Mathf.PI); // goes 0 → 1 → 0 over the dodge
+            playerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, fovCurve);
 
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
 
+        // Reset states
+        playerCamera.fieldOfView = baseFov;
+        healthShieldSystem.isInvincible = false;
         isDodging = false;
 
         yield return new WaitForSeconds(dodgeCooldown);
         dodgeCoroutine = null;
         Debug.Log($"Dodge cooldown ended");
     }
+
     #endregion
 }
