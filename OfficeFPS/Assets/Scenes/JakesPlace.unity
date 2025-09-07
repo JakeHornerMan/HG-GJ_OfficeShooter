@@ -1287,7 +1287,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1788416719377380334
+--- !u!1001 &8795662534187660195
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1295,133 +1295,53 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 41148194024473123, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: m_Name
-      value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: box
-      value: 
-      objectReference: {fileID: 2018478512}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeForce
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeDuration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[1].time
-      value: 0.48495024
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[2].time
-      value: 0.7805098
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[3].time
-      value: 0.9958191
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[1].value
-      value: 0.9020697
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[2].value
-      value: 0.60366416
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[3].value
-      value: 0.50476074
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[1].inSlope
-      value: -0.6976689
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[2].inSlope
-      value: -1.1440777
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[3].inSlope
-      value: -0.149896
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[1].inWeight
-      value: 0.33333334
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[1].outSlope
-      value: -0.6976689
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[2].inWeight
-      value: 0.33333334
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[2].outSlope
-      value: -1.1440777
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[3].inWeight
-      value: 0.25521946
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[3].outSlope
-      value: -0.149896
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[1].outWeight
-      value: 0.15531825
-      objectReference: {fileID: 0}
-    - target: {fileID: 2239373943443425750, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
-      propertyPath: dodgeCurve.m_Curve.Array.data[2].outWeight
-      value: 0.19061372
-      objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.45
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7701933646640269737, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+    - target: {fileID: 483456051024287081, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2716130424389765679, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+      propertyPath: box
+      value: 
+      objectReference: {fileID: 2018478512}
+    - target: {fileID: 3658794474506549405, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+      propertyPath: m_Name
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1435,7 +1355,7 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1386041282}
-  - {fileID: 1788416719377380334}
+  - {fileID: 8795662534187660195}
   - {fileID: 2018478512}
   - {fileID: 836029474}
   - {fileID: 1884829592}
