@@ -11,10 +11,15 @@ public class HealthShieldSystem : MonoBehaviour
     [SerializeField] private float currentHealth;
     [SerializeField] private float currentShield;
 
+    [Header("Flag Values")]
+    public bool isInvincible = false;
+
     public float CurrentHealth => currentHealth;
     public float CurrentShield => currentShield;
     public float MaxHealth => maxHealth;
     public float MaxShield => maxShield;
+
+
 
     void Awake()
     {
@@ -24,7 +29,8 @@ public class HealthShieldSystem : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        if (amount <= 0) return;
+
+        if (amount <= 0 || isInvincible) return;
 
         if (currentShield > 0)
         {
