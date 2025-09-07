@@ -93,6 +93,10 @@ public class PlayerMovement : MonoBehaviour
         // Movement relative to player orientation
         Vector3 move = this.transform.right * moveX + this.transform.forward * moveZ;
 
+        // Normalize to avoid diagonal speed boost
+        if (move.sqrMagnitude > 1f)
+            move.Normalize();
+
         Vector3 targetVelocity = move * moveSpeed;
         Vector3 velocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
 
@@ -126,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
         healthShieldSystem.isInvincible = true;
         Debug.Log($"Dodge started | isDodging: {isDodging}");
 
-        hudManager.ShowDodgeHud();
+        hudManager.ShowDodgeHud(dodgeDuration);
 
         Vector3 moveDir = (this.transform.right * moveX + this.transform.forward * moveZ).normalized;
         if (moveDir.sqrMagnitude < 0.1f)

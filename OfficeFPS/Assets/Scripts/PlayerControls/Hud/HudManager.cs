@@ -11,7 +11,6 @@ public class HudManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private float hitMarkerDuration = 0.2f;
-    [SerializeField] private float speedLinesDuration = 0.25f;
     
 
     private Coroutine hitCoroutine;
@@ -56,15 +55,15 @@ public class HudManager : MonoBehaviour
     }
 
     private Coroutine dodgeHudCoroutine;
-    public void ShowDodgeHud()
+    public void ShowDodgeHud(float duration)
     {
         if (dodgeHudCoroutine != null)
             StopCoroutine(dodgeHudCoroutine);
 
-        dodgeHudCoroutine = StartCoroutine(DodgeHudRoutine());
+        dodgeHudCoroutine = StartCoroutine(DodgeHudRoutine(duration));
     }
 
-    private IEnumerator DodgeHudRoutine()
+    private IEnumerator DodgeHudRoutine(float duration)
     {
         Debug.Log("ShowSpeedLines called");
         speedLines.enabled = true;
@@ -76,9 +75,9 @@ public class HudManager : MonoBehaviour
         float endAlpha = 0f;
         float elapsed = 0f;
 
-        while (elapsed < speedLinesDuration)
+        while (elapsed < duration)
         {
-            float t = elapsed / speedLinesDuration;
+            float t = elapsed / duration;
             slc.a = Mathf.Lerp(startAlphaSlc, endAlpha, t);
             sic.a = Mathf.Lerp(startAlphaSic, endAlpha, t);
             speedLines.color = slc;
