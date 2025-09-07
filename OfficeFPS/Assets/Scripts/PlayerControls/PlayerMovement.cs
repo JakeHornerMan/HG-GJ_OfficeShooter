@@ -154,7 +154,8 @@ public class PlayerMovement : MonoBehaviour
             // ---- Camera FOV ----
             // Ease to 65 at midpoint, then back to 60
             float fovCurve = Mathf.Sin(t * Mathf.PI); // goes 0 → 1 → 0 over the dodge
-            playerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, fovCurve);
+            if(moveZ != 0) // only apply FOV change if moving forward/back
+                playerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, fovCurve);
 
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();

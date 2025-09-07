@@ -19,7 +19,8 @@ public class MouseMovement : MonoBehaviour
     private MouseSpeed currentSetting = MouseSpeed.Setting3;
 
     [Header("Visual Settings")]
-    float maxTiltAngle = 0.3f; // Maximum tilt angle in degrees
+    public float maxTiltAngle = 0.3f; // Maximum tilt angle in degrees
+    public float boostMaxTiltAngle = 0.5f; // Maximum tilt angle in degrees
 
     [Header("Camera Bounce Settings")]
     public float bounceDistance = 0.3f; // how much the camera moves down
@@ -67,21 +68,35 @@ public class MouseMovement : MonoBehaviour
 
         yRotation += mouseX;
 
-        float zRotation = HandleCameraTilt(playerMovement.moveX);
+        float zRotation = HandleCameraTilt(playerMovement.moveX, playerMovement.isDodging);
         
         this.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, zRotation);
     }
 
-    private float HandleCameraTilt(float moveX)
+    private float HandleCameraTilt(float moveX, bool isDodging = false)
     {
-        if (moveX > 0.1f) // moving right
+        if (!isDodging)
         {
-            return -maxTiltAngle;
+            if (moveX > 0.1f) // moving right
+            {
+                return -maxTiltAngle;
+            }
+            else if (moveX < -0.1f) // moving left
+            {
+                return maxTiltAngle;
+            }
         }
-        else if (moveX < -0.1f) // moving left
+        else if (isDodging)
         {
-            return maxTiltAngle;
+            if (moveX > 0.1f) // dodging right
+            {
+                return -boostMaxTiltAngle;
+            }
+            else if (moveX < -0.1f) // dodging left
+            {
+                return boostMaxTiltAngle;
+            }
         }
         return 0f;
     }

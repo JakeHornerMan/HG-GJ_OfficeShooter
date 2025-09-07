@@ -1335,6 +1335,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2648664518522372148, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+      propertyPath: boostMaxTiltAngle
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2716130424389765679, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: box
       value: 
