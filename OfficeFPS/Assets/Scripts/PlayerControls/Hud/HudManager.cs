@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class HudManager : MonoBehaviour
 {
@@ -8,18 +9,22 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Image hitMarker;
     [SerializeField] private Image speedLines;
     [SerializeField] private Image shieldIcon;
+    [SerializeField] private TextMeshProUGUI ammoCountText;
+    [SerializeField] private Image BoostRadial;
+    [SerializeField] private Image BoostIcon;
 
     [Header("Settings")]
     [SerializeField] private float hitMarkerDuration = 0.2f;
-    [SerializeField] private float speedLinesDuration = 0.25f;
-    
+
 
     private Coroutine hitCoroutine;
 
     public void Start()
     {
         if (hitMarker != null)
+        {
             hitMarker.enabled = false;
+        }
 
         if (speedLines != null)
         {
@@ -28,13 +33,27 @@ public class HudManager : MonoBehaviour
             slc.a = 0f;
             speedLines.color = slc;
         }
+
         if (shieldIcon != null)
-        { 
+        {
             shieldIcon.enabled = false;
             Color sic = shieldIcon.color;
             sic.a = 0f;
             shieldIcon.color = sic;
         }
+
+        if (BoostRadial != null)
+        {
+            BoostRadial.enabled = false;
+            BoostRadial.fillAmount = 0f;
+        }
+
+        if (BoostIcon != null)
+        {
+            BoostIcon.enabled = true;
+            BoostRadial.fillAmount = 1f;
+        }
+            
     }
 
     public void ShowHitMarker()
@@ -56,15 +75,15 @@ public class HudManager : MonoBehaviour
     }
 
     private Coroutine dodgeHudCoroutine;
-    public void ShowDodgeHud()
+    public void ShowDodgeHud(float duration)
     {
         if (dodgeHudCoroutine != null)
             StopCoroutine(dodgeHudCoroutine);
 
-        dodgeHudCoroutine = StartCoroutine(DodgeHudRoutine());
+        dodgeHudCoroutine = StartCoroutine(DodgeHudRoutine(duration));
     }
 
-    private IEnumerator DodgeHudRoutine()
+    private IEnumerator DodgeHudRoutine(float duration)
     {
         Debug.Log("ShowSpeedLines called");
         speedLines.enabled = true;
@@ -76,9 +95,9 @@ public class HudManager : MonoBehaviour
         float endAlpha = 0f;
         float elapsed = 0f;
 
-        while (elapsed < speedLinesDuration)
+        while (elapsed < duration)
         {
-            float t = elapsed / speedLinesDuration;
+            float t = elapsed / duration;
             slc.a = Mathf.Lerp(startAlphaSlc, endAlpha, t);
             sic.a = Mathf.Lerp(startAlphaSic, endAlpha, t);
             speedLines.color = slc;
@@ -98,4 +117,72 @@ public class HudManager : MonoBehaviour
 
         dodgeHudCoroutine = null;
     }
+
+    public void UpdateAmmoCount(int maxAmmo, int currentAmmo)
+    {
+        if (ammoCountText != null)
+        {
+            ammoCountText.text = $"{maxAmmo} / {currentAmmo}";
+        }
+    }
+
+    private Coroutine boostCoroutine;
+
+    public void StartBoostFill(float duration = 3f)
+    {
+        if (boostCoroutine == null)
+            StartCoroutine(BoostFillRoutine(duration));
+    }
+
+    private IEnumerator BoostFillRoutine(float duration)
+    {
+        if (BoostRadial == null || BoostIcon == null)
+            yield break;
+
+        // Reset states
+        BoostRadial.fillAmount = 0f;
+        BoostIcon.fillAmount = 0f;
+
+        BoostRadial.enabled = true;
+        BoostIcon.enabled = true;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            float fillValue = Mathf.Lerp(0f, 1f, t);
+
+            BoostRadial.fillAmount = fillValue;
+            BoostIcon.fillAmount = fillValue;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure fully filled
+        BoostRadial.fillAmount = 1f;
+        BoostIcon.fillAmount = 1f;
+
+        // Hide BoostRadial but keep BoostIcon full
+        BoostRadial.enabled = false;
+        BoostIcon.enabled = true;
+
+        boostCoroutine = null;
+    }
+
+    public void UseBoost()
+    {
+        if (BoostRadial != null)
+        {
+            BoostRadial.fillAmount = 0f; 
+            BoostRadial.enabled = false;
+        }
+
+        if (BoostIcon != null)
+        {
+            BoostIcon.fillAmount = 0f;
+            BoostIcon.enabled = false;
+        }
+}
+
 }

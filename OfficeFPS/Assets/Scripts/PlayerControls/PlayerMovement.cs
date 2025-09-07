@@ -93,6 +93,10 @@ public class PlayerMovement : MonoBehaviour
         // Movement relative to player orientation
         Vector3 move = this.transform.right * moveX + this.transform.forward * moveZ;
 
+        // Normalize to avoid diagonal speed boost
+        if (move.sqrMagnitude > 1f)
+            move.Normalize();
+
         Vector3 targetVelocity = move * moveSpeed;
         Vector3 velocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
 
@@ -126,7 +130,8 @@ public class PlayerMovement : MonoBehaviour
         healthShieldSystem.isInvincible = true;
         Debug.Log($"Dodge started | isDodging: {isDodging}");
 
-        hudManager.ShowDodgeHud();
+        hudManager.ShowDodgeHud(dodgeDuration);
+        hudManager.UseBoost();
 
         Vector3 moveDir = (this.transform.right * moveX + this.transform.forward * moveZ).normalized;
         if (moveDir.sqrMagnitude < 0.1f)
@@ -150,7 +155,8 @@ public class PlayerMovement : MonoBehaviour
             // ---- Camera FOV ----
             // Ease to 65 at midpoint, then back to 60
             float fovCurve = Mathf.Sin(t * Mathf.PI); // goes 0 → 1 → 0 over the dodge
-            playerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, fovCurve);
+            if(moveZ != 0) // only apply FOV change if moving forward/back
+                playerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, fovCurve);
 
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
@@ -160,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
         playerCamera.fieldOfView = baseFov;
         healthShieldSystem.isInvincible = false;
         isDodging = false;
+        hudManager.StartBoostFill(dodgeCooldown);
 
         yield return new WaitForSeconds(dodgeCooldown);
         dodgeCoroutine = null;
