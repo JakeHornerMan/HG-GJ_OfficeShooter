@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class HudManager : MonoBehaviour
 {
@@ -8,10 +9,11 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Image hitMarker;
     [SerializeField] private Image speedLines;
     [SerializeField] private Image shieldIcon;
+    [SerializeField] private TextMeshProUGUI ammoCountText;
 
     [Header("Settings")]
     [SerializeField] private float hitMarkerDuration = 0.2f;
-    
+
 
     private Coroutine hitCoroutine;
 
@@ -28,7 +30,7 @@ public class HudManager : MonoBehaviour
             speedLines.color = slc;
         }
         if (shieldIcon != null)
-        { 
+        {
             shieldIcon.enabled = false;
             Color sic = shieldIcon.color;
             sic.a = 0f;
@@ -96,5 +98,13 @@ public class HudManager : MonoBehaviour
         shieldIcon.enabled = false;
 
         dodgeHudCoroutine = null;
+    }
+    
+    public void UpdateAmmoCount(int maxAmmo, int currentAmmo)
+    {
+        if (ammoCountText != null)
+        {
+            ammoCountText.text = $"{maxAmmo} / {currentAmmo}";
+        }
     }
 }
