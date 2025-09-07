@@ -50,10 +50,6 @@ public class MouseMovement : MonoBehaviour
     void Update()
     {
         Look();
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            StartBounce();
-        }
         HandleSensitivityChange();
     }
 
@@ -74,7 +70,7 @@ public class MouseMovement : MonoBehaviour
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, zRotation);
     }
 
-    private float HandleCameraTilt(float moveX, bool isDodging = false)
+    private float HandleCameraTilt(float moveX, bool isDodging)
     {
         if (!isDodging)
         {

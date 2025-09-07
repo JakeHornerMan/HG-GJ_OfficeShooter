@@ -10,6 +10,8 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Image speedLines;
     [SerializeField] private Image shieldIcon;
     [SerializeField] private TextMeshProUGUI ammoCountText;
+    [SerializeField] private Image BoostRadial;
+    [SerializeField] private Image BoostIcon;
 
     [Header("Settings")]
     [SerializeField] private float hitMarkerDuration = 0.2f;
@@ -20,7 +22,9 @@ public class HudManager : MonoBehaviour
     public void Start()
     {
         if (hitMarker != null)
+        {
             hitMarker.enabled = false;
+        }
 
         if (speedLines != null)
         {
@@ -29,6 +33,7 @@ public class HudManager : MonoBehaviour
             slc.a = 0f;
             speedLines.color = slc;
         }
+
         if (shieldIcon != null)
         {
             shieldIcon.enabled = false;
@@ -36,6 +41,19 @@ public class HudManager : MonoBehaviour
             sic.a = 0f;
             shieldIcon.color = sic;
         }
+
+        if (BoostRadial != null)
+        {
+            BoostRadial.enabled = false;
+            BoostRadial.fillAmount = 0f;
+        }
+
+        if (BoostIcon != null)
+        {
+            BoostIcon.enabled = true;
+            BoostRadial.fillAmount = 1f;
+        }
+            
     }
 
     public void ShowHitMarker()
@@ -99,7 +117,7 @@ public class HudManager : MonoBehaviour
 
         dodgeHudCoroutine = null;
     }
-    
+
     public void UpdateAmmoCount(int maxAmmo, int currentAmmo)
     {
         if (ammoCountText != null)
@@ -107,4 +125,64 @@ public class HudManager : MonoBehaviour
             ammoCountText.text = $"{maxAmmo} / {currentAmmo}";
         }
     }
+
+    private Coroutine boostCoroutine;
+
+    public void StartBoostFill(float duration = 3f)
+    {
+        if (boostCoroutine == null)
+            StartCoroutine(BoostFillRoutine(duration));
+    }
+
+    private IEnumerator BoostFillRoutine(float duration)
+    {
+        if (BoostRadial == null || BoostIcon == null)
+            yield break;
+
+        // Reset states
+        BoostRadial.fillAmount = 0f;
+        BoostIcon.fillAmount = 0f;
+
+        BoostRadial.enabled = true;
+        BoostIcon.enabled = true;
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            float fillValue = Mathf.Lerp(0f, 1f, t);
+
+            BoostRadial.fillAmount = fillValue;
+            BoostIcon.fillAmount = fillValue;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure fully filled
+        BoostRadial.fillAmount = 1f;
+        BoostIcon.fillAmount = 1f;
+
+        // Hide BoostRadial but keep BoostIcon full
+        BoostRadial.enabled = false;
+        BoostIcon.enabled = true;
+
+        boostCoroutine = null;
+    }
+
+    public void UseBoost()
+    {
+        if (BoostRadial != null)
+        {
+            BoostRadial.fillAmount = 0f; 
+            BoostRadial.enabled = false;
+        }
+
+        if (BoostIcon != null)
+        {
+            BoostIcon.fillAmount = 0f;
+            BoostIcon.enabled = false;
+        }
+}
+
 }

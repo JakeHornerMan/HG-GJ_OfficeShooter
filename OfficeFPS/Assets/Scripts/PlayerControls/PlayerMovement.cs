@@ -131,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
         Debug.Log($"Dodge started | isDodging: {isDodging}");
 
         hudManager.ShowDodgeHud(dodgeDuration);
+        hudManager.UseBoost();
 
         Vector3 moveDir = (this.transform.right * moveX + this.transform.forward * moveZ).normalized;
         if (moveDir.sqrMagnitude < 0.1f)
@@ -165,6 +166,7 @@ public class PlayerMovement : MonoBehaviour
         playerCamera.fieldOfView = baseFov;
         healthShieldSystem.isInvincible = false;
         isDodging = false;
+        hudManager.StartBoostFill(dodgeCooldown);
 
         yield return new WaitForSeconds(dodgeCooldown);
         dodgeCoroutine = null;
