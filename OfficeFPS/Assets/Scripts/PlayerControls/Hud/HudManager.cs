@@ -12,19 +12,51 @@ public class HudManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ammoCountText;
     [SerializeField] private Image BoostRadial;
     [SerializeField] private Image BoostIcon;
+    [SerializeField] private Image healthBar;
+    [SerializeField] private Image shieldBar;
+    [SerializeField] private Image healthDamageIndicator;
+    [SerializeField] private Image shieldDamageIndicator;
+    [SerializeField] private TextMeshProUGUI healthAmountText;
+    [SerializeField] private TextMeshProUGUI shieldAmountText;
+
 
     [Header("Settings")]
     [SerializeField] private float hitMarkerDuration = 0.2f;
+    [SerializeField] private float healthShieldChangeTime = 0.5f;
+    [SerializeField] private float damageIndicatorFadeTime = 0.5f;
+
 
 
     private Coroutine hitCoroutine;
 
     public void Start()
     {
-        if (hitMarker != null)
+        if (healthBar != null)
         {
-            hitMarker.enabled = false;
+            healthBar.enabled = true;
+            healthBar.fillAmount = 0f;
         }
+
+        if (shieldBar != null)
+        {
+            shieldBar.enabled = true;
+            shieldBar.fillAmount = 0f;
+        }
+
+        if (healthAmountText != null)
+        {
+            healthAmountText.text = "";
+        }
+
+        if (shieldAmountText != null)
+        {
+            shieldAmountText.text = "";
+        }
+
+        if (hitMarker != null)
+            {
+                hitMarker.enabled = false;
+            }
 
         if (speedLines != null)
         {
@@ -53,7 +85,23 @@ public class HudManager : MonoBehaviour
             BoostIcon.enabled = true;
             BoostRadial.fillAmount = 1f;
         }
-            
+
+        if (healthDamageIndicator != null)
+        {
+            healthDamageIndicator.enabled = false;
+            Color hdc = speedLines.color;
+            hdc.a = 150f;
+            speedLines.color = hdc;
+        }
+
+        if (shieldDamageIndicator != null)
+        {
+            shieldDamageIndicator.enabled = false;
+            Color sdc = speedLines.color;
+            sdc.a = 150f;
+            speedLines.color = sdc;
+        }
+
     }
 
     public void ShowHitMarker()
@@ -174,7 +222,7 @@ public class HudManager : MonoBehaviour
     {
         if (BoostRadial != null)
         {
-            BoostRadial.fillAmount = 0f; 
+            BoostRadial.fillAmount = 0f;
             BoostRadial.enabled = false;
         }
 
@@ -183,6 +231,136 @@ public class HudManager : MonoBehaviour
             BoostIcon.fillAmount = 0f;
             BoostIcon.enabled = false;
         }
-}
+    }
 
+    private Coroutine healthCoroutine;
+    public void UpdateHealthBar(float currentHealth, float maxHealth)
+    {
+        if (healthBar == null) return;
+
+        float targetFill = Mathf.Clamp01(currentHealth / maxHealth);
+
+        if (healthAmountText != null)
+        {
+            healthAmountText.text = $"{Mathf.RoundToInt(currentHealth)} / {Mathf.RoundToInt(maxHealth)}";
+        }
+
+        // Stop any running coroutine before starting a new one
+        if (healthCoroutine != null)
+            StopCoroutine(healthCoroutine);
+
+        healthCoroutine = StartCoroutine(UpdateBarRoutine(healthBar, targetFill));
+    }
+
+    private Coroutine shieldCoroutine;
+    public void UpdateShieldBar(float currentShield, float maxShield)
+    {
+        if (shieldBar == null) return;
+
+        float targetFill = Mathf.Clamp01(currentShield / maxShield);
+        
+        if (shieldAmountText != null)
+        {
+            shieldAmountText.text = $"{Mathf.RoundToInt(currentShield)} / {Mathf.RoundToInt(maxShield)}";
+        }
+
+        // Stop any running coroutine before starting a new one
+        if (shieldCoroutine != null)
+            StopCoroutine(shieldCoroutine);
+
+        shieldCoroutine = StartCoroutine(UpdateBarRoutine(shieldBar, targetFill));
+    }
+
+    private IEnumerator UpdateBarRoutine(Image bar, float targetFill)
+    {
+        float elapsed = 0f;
+        float startFill = bar.fillAmount;
+
+        while (elapsed < healthShieldChangeTime)
+        {
+            float t = elapsed / healthShieldChangeTime;
+            bar.fillAmount = Mathf.Lerp(startFill, targetFill, t);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Snap to final value
+        bar.fillAmount = targetFill;
+    }
+
+
+    private Coroutine healthDamageCoroutine;
+    public void ShowHealthDamage()
+    {
+        if (healthDamageIndicator == null) return;
+
+        if (healthDamageCoroutine != null)
+            StopCoroutine(healthDamageCoroutine);
+
+        healthDamageCoroutine = StartCoroutine(HealthDamageIndicatorRoutine());
+    }
+
+    private IEnumerator HealthDamageIndicatorRoutine()
+    {
+        healthDamageIndicator.enabled = true;
+
+        Color c = healthDamageIndicator.color;
+        c.a = 150f / 255f;
+        healthDamageIndicator.color = c;
+
+        float elapsed = 0f;
+        while (elapsed < damageIndicatorFadeTime)
+        {
+            float t = elapsed / damageIndicatorFadeTime;
+            c.a = Mathf.Lerp(150f / 255f, 0f, t);
+            healthDamageIndicator.color = c;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        c.a = 0f;
+        healthDamageIndicator.color = c;
+        healthDamageIndicator.enabled = false;
+
+        healthDamageCoroutine = null;
+    }
+
+    private Coroutine shieldDamageCoroutine;
+    public void ShowShieldDamage()
+    {
+        if (shieldDamageIndicator == null) return;
+
+        if (shieldDamageCoroutine != null)
+            StopCoroutine(shieldDamageCoroutine);
+
+        shieldDamageCoroutine = StartCoroutine(ShieldDamageIndicatorRoutine());
+    }
+
+    private IEnumerator ShieldDamageIndicatorRoutine()
+    {
+        shieldDamageIndicator.enabled = true;
+
+        Color c = shieldDamageIndicator.color;
+        c.a = 150f / 255f;
+        shieldDamageIndicator.color = c;
+
+        float elapsed = 0f;
+        while (elapsed < damageIndicatorFadeTime)
+        {
+            float t = elapsed / damageIndicatorFadeTime;
+            c.a = Mathf.Lerp(150f / 255f, 0f, t);
+            shieldDamageIndicator.color = c;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        c.a = 0f;
+        shieldDamageIndicator.color = c;
+        shieldDamageIndicator.enabled = false;
+
+        shieldDamageCoroutine = null;
+    }
 }

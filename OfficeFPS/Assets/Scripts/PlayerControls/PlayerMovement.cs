@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     // Input axes
     public float moveX;
     public float moveZ;
+    public string lastGroundTag; // stores last touched ground tag
 
     void Start()
     {
@@ -74,16 +75,23 @@ public class PlayerMovement : MonoBehaviour
         moveZ = Input.GetAxis("Vertical");
     }
 
+
     private void GroundCheck()
     {
-        bool grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, groundMask);
+        bool grounded = colliders.Length > 0;
 
         if (!isGrounded && grounded)
+        {
+            lastGroundTag = colliders[0].gameObject.tag;
+
+            Debug.Log($"[GroundCheck] Landed on object: {colliders[0].gameObject.name}, tag: {lastGroundTag}");
+
             mouseMovement.StartBounce();
+        }
 
         isGrounded = grounded;
 
-        // Debug visualization
         Color sphereColor = isGrounded ? Color.green : Color.red;
         Debug.DrawRay(groundCheck.position, Vector3.down * groundDistance, sphereColor);
     }
