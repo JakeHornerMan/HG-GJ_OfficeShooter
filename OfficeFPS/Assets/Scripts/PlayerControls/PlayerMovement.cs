@@ -15,6 +15,7 @@ public class PlayerMovement : MonoBehaviour
     public HealthShieldSystem healthShieldSystem;
 
     public HudManager hudManager;
+    public PlayerSounds playerSounds;
 
     [Header("Movement Settings")]
     public float moveSpeed = 10f;
@@ -140,6 +141,8 @@ public class PlayerMovement : MonoBehaviour
 
         hudManager.ShowDodgeHud(dodgeDuration);
         hudManager.UseBoost();
+
+        playerSounds.PlayDodgeSound();
 
         Vector3 moveDir = (this.transform.right * moveX + this.transform.forward * moveZ).normalized;
         if (moveDir.sqrMagnitude < 0.1f)

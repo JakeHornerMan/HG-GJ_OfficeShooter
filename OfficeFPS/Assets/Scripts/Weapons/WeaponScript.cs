@@ -10,6 +10,7 @@ public class WeaponScript : MonoBehaviour
     public HudManager hudManager;
     public Transform attackPoint;
     public Camera weaponCamera;
+    public PlayerSounds playerSounds;
 
     [Header("Bullet Speed Settings")]
     [SerializeField] public float shootForce = 100f;
@@ -96,6 +97,7 @@ public class WeaponScript : MonoBehaviour
 
         //Instantiate bullet
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
+        playerSounds.PlayGunShotSound();
 
         //Add force to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
@@ -171,6 +173,7 @@ public class WeaponScript : MonoBehaviour
         Quaternion startRot = playerGun.transform.localRotation;
         Vector3 startPos = playerGun.transform.localPosition;
         Vector3 upPos = startPos + new Vector3(0f, reloadBobHeight, 0f); // raise by 0.1f
+        playerSounds.PlayReloadSound();
 
         while (elapsed < duration)
         {
@@ -191,6 +194,7 @@ public class WeaponScript : MonoBehaviour
         // Reset transform values
         playerGun.transform.localRotation = startRot;
         playerGun.transform.localPosition = startPos;
+        playerSounds.PlayReloadFinishedSound();
 
         bulletsLeft = magazineSize;
         reloading = false;
