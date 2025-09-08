@@ -42,6 +42,9 @@ public class WeaponScript : MonoBehaviour
         bulletsLeft = magazineSize;
         readyToShoot = true;
         hudManager.UpdateAmmoCount(magazineSize, bulletsLeft);
+        shooting = false;
+        readyToShoot = true;
+        reloading = false;
     }
 
     private void Update()

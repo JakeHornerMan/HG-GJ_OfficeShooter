@@ -29,6 +29,7 @@ public class HealthShieldSystem : MonoBehaviour
     {
         currentHealth = maxHealth;
         currentShield = maxShield;
+        isInvincible = false;
     }
 
     void Start()
