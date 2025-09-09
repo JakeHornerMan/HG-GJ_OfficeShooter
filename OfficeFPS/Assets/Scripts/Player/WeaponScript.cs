@@ -103,8 +103,9 @@ public class WeaponScript : MonoBehaviour
         playerSounds.PlayGunShotSound();
 
         //Add force to bullet
-        currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-        currentBullet.GetComponent<Rigidbody>().AddForce(weaponCamera.transform.up * upwardForce, ForceMode.Impulse);
+        Rigidbody rb = currentBullet.GetComponent<Rigidbody>();
+        rb.AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
+        rb.AddForce(weaponCamera.transform.up * upwardForce, ForceMode.Impulse);
 
         bulletsLeft -= bulletsPerTap;
         bulletsShot += bulletsPerTap;
