@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
 {
     [Header("References")]
     private Rigidbody rb;
+    private string ownerTag;
 
     [Header("Settings")]
     public float lifeTime = 10f;          // Auto-destroy after this time
@@ -20,11 +21,12 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        SpawnBullet();
+
     }
 
-    public void SpawnBullet()
+    public void SpawnBullet(string ownerTag = "Environment")
     {
+        this.ownerTag = ownerTag;
         EndLife(lifeTime);
     }
 
@@ -36,7 +38,7 @@ public class Bullet : MonoBehaviour
             return; // Ignore other bullets
         }
 
-        if (other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player") && ownerTag != "Player")
         {
             Debug.Log($"Bullet hit Player {other.gameObject.name}");
             HealthShieldSystem player = other.gameObject.GetComponentInParent<HealthShieldSystem>();

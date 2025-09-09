@@ -100,6 +100,7 @@ public class WeaponScript : MonoBehaviour
 
         //Instantiate bullet
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
+        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag); // Set the owner tag for the bullet
         playerSounds.PlayGunShotSound();
 
         //Add force to bullet
