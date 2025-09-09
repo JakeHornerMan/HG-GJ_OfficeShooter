@@ -33,6 +33,40 @@ public class EnemyHud : MonoBehaviour
         transform.LookAt(transform.position + cam.forward);
     }
 
+    public void SetColorHealthBar(RGBSettings enemyType)
+    {
+        if (healthBar != null)
+        {
+            switch (enemyType)
+            {
+                case RGBSettings.RED:
+                    healthBar.color = Color.red;
+                    break;
+                case RGBSettings.GREEN:
+                    healthBar.color = Color.green;
+                    break;
+                case RGBSettings.BLUE:
+                    healthBar.color = Color.blue;
+                    break;
+                default:
+                    healthBar.color = Color.white;
+                    break;
+            }
+        }
+    }
+
+    public void HideHealthBar()
+    {
+        if (healthBarContainer != null)
+        {
+            healthBarContainer.enabled = false;
+        }
+        if (healthBar != null)
+        {
+            healthBar.enabled = false;
+        }
+    }
+
     private Coroutine healthCoroutine;
     public void UpdateHealthBar(float currentHealth, float maxHealth)
     {

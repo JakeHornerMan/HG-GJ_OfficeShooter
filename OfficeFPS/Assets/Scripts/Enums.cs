@@ -17,7 +17,8 @@ public enum RGBSettings
 {
     RED,
     GREEN,
-    BLUE
+    BLUE,
+    NONE
 }
 
 public static class RGBSettingsExtensions

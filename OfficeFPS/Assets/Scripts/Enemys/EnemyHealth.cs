@@ -8,6 +8,9 @@ public class EnemyHealth : MonoBehaviour
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private RGBSettings enemyType;
+    [SerializeField] private float damageMultiplier = 5f;
+
 
     [Header("Current Values")]
     [SerializeField] private float currentHealth;
@@ -15,12 +18,18 @@ public class EnemyHealth : MonoBehaviour
     void Awake()
     {
         currentHealth = maxHealth;
+        enemyHud.SetColorHealthBar(enemyType);
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, RGBSettings bulletType)
     {
         Debug.Log($"[HealthShieldSystem] {gameObject.name} TakeDamage called with amount: {amount}");
         if (amount <= 0) return;
+        if (bulletType == enemyType)
+        {
+            Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
+            amount *= damageMultiplier; // Double damage if the bullet type matches enemy type
+        }
         
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);

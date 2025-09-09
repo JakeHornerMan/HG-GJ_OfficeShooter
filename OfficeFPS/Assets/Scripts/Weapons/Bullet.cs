@@ -34,6 +34,8 @@ public class Bullet : MonoBehaviour
     public void SpawnBullet(string ownerTag = "Environment", RGBSettings bulletType = RGBSettings.BLUE)
     {
         this.ownerTag = ownerTag;
+        bulletColor = bulletType;
+        Debug.Log($"[Bullet] Spawned by {ownerTag} with color {bulletType}");
 
         // Select material based on enum
         Material chosenMat = null;
@@ -83,7 +85,7 @@ public class Bullet : MonoBehaviour
             EnemyHealth enemy = other.gameObject.GetComponentInParent<EnemyHealth>();
             if (enemy != null)
             {
-                enemy.TakeDamage(baseDamage);
+                enemy.TakeDamage(baseDamage, bulletColor);
                 Debug.Log($"[Enemy] Applied {baseDamage} damage.");
                 EndLife();
                 return;
