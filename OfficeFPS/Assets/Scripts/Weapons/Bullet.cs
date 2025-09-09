@@ -6,11 +6,18 @@ public class Bullet : MonoBehaviour
     [Header("References")]
     private Rigidbody rb;
     private string ownerTag;
+    public Material material;
+
+    [Header("Materials")]
+    public Material redMaterial;
+    public Material greenMaterial;
+    public Material blueMaterial;
 
     [Header("Settings")]
     public float lifeTime = 10f;          // Auto-destroy after this time
     public float baseDamage = 15f;          // Damage applied on hit
     private Coroutine endLifeCoroutine = null;
+    private RGBSettings bulletColor;
 
     private void Awake()
     {
@@ -24,9 +31,28 @@ public class Bullet : MonoBehaviour
 
     }
 
-    public void SpawnBullet(string ownerTag = "Environment")
+    public void SpawnBullet(string ownerTag = "Environment", RGBSettings bulletType = RGBSettings.BLUE)
     {
         this.ownerTag = ownerTag;
+
+        // Select material based on enum
+        Material chosenMat = null;
+        switch (bulletType)
+        {
+            case RGBSettings.RED:   chosenMat = redMaterial; break;
+            case RGBSettings.GREEN: chosenMat = greenMaterial; break;
+            case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
+        }
+
+        if (chosenMat != null)
+        {
+            GetComponent<Renderer>().material = chosenMat; 
+        }
+        else
+        {
+            Debug.LogWarning("[Bullet] No material assigned for " + bulletType);
+        }
+
         EndLife(lifeTime);
     }
 
