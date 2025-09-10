@@ -166,11 +166,34 @@ public class HudManager : MonoBehaviour
         dodgeHudCoroutine = null;
     }
 
-    public void UpdateAmmoCount(int maxAmmo, int currentAmmo)
+    public void UpdateAmmoCount(int maxAmmo, int currentAmmo, RGBSettings bulletType)
     {
         if (ammoCountText != null)
         {
             ammoCountText.text = $"{maxAmmo} / {currentAmmo}";
+            SetColorAmmoCount(bulletType);
+        }
+    }
+
+    public void SetColorAmmoCount(RGBSettings bulletType)
+    {
+        if (ammoCountText != null)
+        {
+            switch (bulletType)
+            {
+                case RGBSettings.RED:
+                    ammoCountText.color = Color.red;
+                    break;
+                case RGBSettings.GREEN:
+                    ammoCountText.color = Color.green;
+                    break;
+                case RGBSettings.BLUE:
+                    ammoCountText.color = Color.blue;
+                    break;
+                default:
+                    ammoCountText.color = Color.white;
+                    break;
+            }
         }
     }
 

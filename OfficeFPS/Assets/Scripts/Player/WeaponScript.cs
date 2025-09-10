@@ -11,6 +11,7 @@ public class WeaponScript : MonoBehaviour
     public Transform attackPoint;
     public Camera weaponCamera;
     public PlayerSounds playerSounds;
+    private System.Random rng = new System.Random();
 
     [Header("Bullet Speed Settings")]
     [SerializeField] public float shootForce = 100f;
@@ -35,19 +36,26 @@ public class WeaponScript : MonoBehaviour
     public bool shooting;
     public bool readyToShoot;
     public bool reloading;
+    private Queue<RGBSettings> magazineQueue;
 
 
     private void Awake()
     {
         bulletsLeft = magazineSize;
         readyToShoot = true;
-        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft);
+        shooting = false;
+        readyToShoot = true;
+        reloading = false;
+        ManageMagazine();
+        RGBSettings nextBullet = magazineQueue.Peek();
+        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft, nextBullet);
     }
 
     private void Update()
     {
         MyInput();
     }
+
     private void MyInput()
     {
         if (Input.GetButtonDown("Fire1") && readyToShoot && !reloading && bulletsLeft > 0)
@@ -96,17 +104,27 @@ public class WeaponScript : MonoBehaviour
         Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
 
         //Instantiate bullet
+        RGBSettings firedBullet = magazineQueue.Dequeue();
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
+        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, firedBullet); // Set the owner tag for the bullet
         playerSounds.PlayGunShotSound();
 
         //Add force to bullet
-        currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
-        currentBullet.GetComponent<Rigidbody>().AddForce(weaponCamera.transform.up * upwardForce, ForceMode.Impulse);
+        Rigidbody rb = currentBullet.GetComponent<Rigidbody>();
+        rb.AddForce(directionWithSpread.normalized * shootForce, ForceMode.Impulse);
+        rb.AddForce(weaponCamera.transform.up * upwardForce, ForceMode.Impulse);
 
         bulletsLeft -= bulletsPerTap;
         bulletsShot += bulletsPerTap;
 
-        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft);
+
+        RGBSettings nextBullet = RGBSettings.NONE;
+        if (bulletsLeft > 0 && !reloading)
+        {
+           nextBullet = magazineQueue.Peek();
+        }
+
+        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft, nextBullet);
 
         ShotReset(timeBetweenShooting);
     }
@@ -160,7 +178,10 @@ public class WeaponScript : MonoBehaviour
     {
         Debug.Log($"Relaod called, readyToShoot: {readyToShoot}, bulletsLeft: {bulletsLeft}, reloading: {reloading}");
         if (reloadCoroutine == null && readyToShoot == true && reloading == false)
+        {
             reloadCoroutine = StartCoroutine(ReloadRoutine(reloadTime));
+            ManageMagazine();
+        }
     }
 
     private IEnumerator ReloadRoutine(float duration)
@@ -200,7 +221,57 @@ public class WeaponScript : MonoBehaviour
         reloading = false;
         reloadCoroutine = null;
         readyToShoot = true;
-        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft);
+        RGBSettings nextBullet = magazineQueue.Peek();
+        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft, nextBullet);
         Debug.Log($"Reload complete, readyToShoot: {readyToShoot}");
+    }
+
+    private void ManageMagazine()
+    {
+        magazineQueue = new Queue<RGBSettings>();
+
+        int baseCount = magazineSize / 3;     // How many of each color
+        int remainder = magazineSize % 3;     // Extra bullets to fill with randoms
+
+        List<RGBSettings> tempList = new List<RGBSettings>();
+
+        // Add base bullets
+        for (int i = 0; i < baseCount; i++)
+        {
+            tempList.Add(RGBSettings.RED);
+            tempList.Add(RGBSettings.GREEN);
+            tempList.Add(RGBSettings.BLUE);
+        }
+
+        // Add remainder bullets randomly
+        for (int i = 0; i < remainder; i++)
+        {
+            RGBSettings randomColor = (RGBSettings)rng.Next(0, 3); // 0=RED, 1=GREEN, 2=BLUE
+            tempList.Add(randomColor);
+        }
+
+        // Shuffle the list before turning it into a queue
+        ShuffleList(tempList);
+
+        // Fill the queue
+        foreach (var bullet in tempList)
+        {
+            magazineQueue.Enqueue(bullet);
+        }
+
+        Debug.Log($"[ManageMagazine] New magazine created with {magazineSize} bullets: {string.Join(", ", magazineQueue)}");
+    }
+
+    private void ShuffleList<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
     }
 }
