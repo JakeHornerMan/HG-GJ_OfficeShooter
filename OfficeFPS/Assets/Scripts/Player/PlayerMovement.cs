@@ -67,11 +67,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        
-    }
-
     #region Functionality
     private void GetInput()
     {
@@ -172,12 +167,13 @@ public class PlayerMovement : MonoBehaviour
     private bool CheckForWall()
     {
         float checkDistance = 0.35f;
-        Vector3 origin = transform.position + Vector3.up * 0.5f; // lift raycast a bit to avoid floor
+        Vector3 halfExtents = new Vector3(0.3f, 0.5f, 0.3f); // half of (0.6, 1, 0.6)
+        Vector3 origin = transform.position + Vector3.up * halfExtents.y; // center at player's chest
         Vector3 direction = transform.forward;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, checkDistance))
+        if (Physics.BoxCast(origin, halfExtents, direction, out RaycastHit hit, transform.rotation, checkDistance))
         {
-            Debug.Log($"[WallCheck] Hit {hit.collider.name} at distance {hit.distance}");
+            Debug.Log($"[WallCheck] Box hit {hit.collider.name} at distance {hit.distance}");
             return true;
         }
 
