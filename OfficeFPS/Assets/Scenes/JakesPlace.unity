@@ -2402,6 +2402,18 @@ PrefabInstance:
       propertyPath: box
       value: 
       objectReference: {fileID: 2018478512}
+    - target: {fileID: 2881761406043984610, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+      propertyPath: moveSpeedJump
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2881761406043984610, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+      propertyPath: wallCheckDistance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2881761406043984610, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
+      propertyPath: wallCheckJumpForce
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6938942315899935623, guid: e34a789aaddccdb479d1ee100c1a7232, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
