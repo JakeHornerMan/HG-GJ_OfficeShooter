@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement flags")]
     public bool isGrounded;
     public bool isDodging = false;
+    public bool isJumping = false;
     // Input axes
     public float moveX;
     public float moveZ;
@@ -44,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         isDodging = false;
+        isJumping = false;
     }
 
     void Update()
@@ -59,15 +61,15 @@ public class PlayerMovement : MonoBehaviour
         {
             Dodge();
         }
-
+        if (isGrounded && !isDodging && !isJumping)
+        {
+            Move();
+        }
     }
 
     void FixedUpdate()
     {
-        if (isGrounded && !isDodging)
-        {
-            Move();
-        }
+        
     }
 
     #region Functionality
@@ -75,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
     {
         moveX = Input.GetAxis("Horizontal");
         moveZ = Input.GetAxis("Vertical");
+            
     }
 
 
@@ -90,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log($"[GroundCheck] Landed on object: {colliders[0].gameObject.name}, tag: {lastGroundTag}");
 
             mouseMovement.StartBounce();
+            isJumping = false;
         }
 
         isGrounded = grounded;
@@ -114,13 +118,72 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    // private void Jump()
+    // {
+
+    //     //This is a shitty fix for jumping while running into a wall
+    //     // float jumpForceTarget = 0f;
+    //     // Debug.Log($"MoveZ: {moveZ}, WallCheck: {CheckForWall()}, rb. linearVelocity: {rb.linearVelocity}");
+    //     // if (CheckForWall() && moveZ > 0 && rb.linearVelocity == Vector3.zero)
+    //     // {
+    //     //     Debug.Log("Fix Wall jump detected");
+    //     //     jumpForceTarget = wallCheckJumpForce;
+    //     // }else
+    //     // {
+    //     //     jumpForceTarget = jumpForce;
+    //     // }
+
+    //     Vector3 move = this.transform.right * moveX + this.transform.forward * moveZ;
+    //     Vector3 targetVelocity = move * moveSpeedJump;
+    //     Vector3 velocity = new Vector3(targetVelocity.x, jumpForce, targetVelocity.z);
+    //     rb.linearVelocity = velocity;
+    // }
+
     private void Jump()
     {
+        if (!isGrounded) return;
+        isJumping = true;
+
+        if (CheckForWall() && moveZ > 0)
+        {
+            StopCompletely();
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            Debug.Log("Jump against wall");
+            return;
+        }
+
         Vector3 move = this.transform.right * moveX + this.transform.forward * moveZ;
         Vector3 targetVelocity = move * moveSpeedJump;
         Vector3 velocity = new Vector3(targetVelocity.x, jumpForce, targetVelocity.z);
         rb.linearVelocity = velocity;
     }
+
+    public void StopCompletely()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        // also clear input so Move() doesn’t immediately re-apply motion
+        moveX = 0f;
+        moveZ = 0f;
+    }
+
+
+    private bool CheckForWall()
+    {
+        float checkDistance = 0.35f;
+        Vector3 origin = transform.position + Vector3.up * 0.5f; // lift raycast a bit to avoid floor
+        Vector3 direction = transform.forward;
+
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, checkDistance))
+        {
+            Debug.Log($"[WallCheck] Hit {hit.collider.name} at distance {hit.distance}");
+            return true;
+        }
+
+        return false;
+    }
+
     #endregion
 
     #region Dodge
