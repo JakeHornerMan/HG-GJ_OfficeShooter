@@ -85,7 +85,7 @@ public class PlayerMovement : MonoBehaviour
         {
             lastGroundTag = colliders[0].gameObject.tag;
 
-            Debug.Log($"[GroundCheck] Landed on object: {colliders[0].gameObject.name}, tag: {lastGroundTag}");
+            // Debug.Log($"[GroundCheck] Landed on object: {colliders[0].gameObject.name}, tag: {lastGroundTag}");
 
             mouseMovement.StartBounce();
             isJumping = false;
