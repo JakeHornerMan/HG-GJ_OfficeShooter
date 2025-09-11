@@ -28,10 +28,12 @@ public class EnemyBehaviour : MonoBehaviour
     public Vector3 lastKnownPosition;
     public bool lastPositionSet = false;
     public bool isHunting = false;
+    public float sightRangeHunting;
     public float huntPlayerCheckTime = 5f;
 
     private void Awake()
     {
+        sightRangeHunting = sightRange * 2;
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyCombat = GetComponent<EnemyCombat>();
@@ -43,6 +45,12 @@ public class EnemyBehaviour : MonoBehaviour
         //Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
+
+        if (!playerInSightRange & isHunting)
+        {
+            playerInSightRange = FindPlayer();    
+            Debug.Log($"[EnemyBehaviour] : isHunting | LongRangeChase playerInSightRange = {playerInSightRange}");
+        }
 
         Debug.Log($"[EnemyBehaviour] : Update | sightRange: {playerInSightRange}, attackRange: {playerInAttackRange}");
 
@@ -155,9 +163,10 @@ public class EnemyBehaviour : MonoBehaviour
     {
         Vector3 origin = transform.position + Vector3.up * 1.0f; // lift ray slightly so it's not at ground level
         Vector3 direction = (player.position - origin).normalized;
-        Debug.DrawRay(origin, direction * sightRange, Color.cyan, 1f);
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, sightRange))
+        Debug.DrawRay(origin, direction * sightRangeHunting, Color.cyan, 1f);
+
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, sightRangeHunting))
         {
             Debug.Log($"[EnemyBehaviour] : FindPlayer | Ray hit {hit.collider.gameObject.name} on layer {LayerMask.LayerToName(hit.collider.gameObject.layer)} at distance {hit.distance}");
 
@@ -205,12 +214,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             return;
         }
-        // {
-            //     StopCoroutine(huntLookCoroutine);
-            //     return;
-            // }
-
-            huntLookCoroutine = StartCoroutine(LookForPlayerRoutine());
+        huntLookCoroutine = StartCoroutine(LookForPlayerRoutine());
     }
 
     private IEnumerator LookForPlayerRoutine()

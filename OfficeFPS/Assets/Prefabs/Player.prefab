@@ -339,7 +339,7 @@ MonoBehaviour:
   jumpForce: 3
   dodgeForce: 12
   dodgeDuration: 0.5
-  dodgeCooldown: 3
+  dodgeCooldown: 1.5
   dodgeCurve:
     serializedVersion: 2
     m_Curve:
