@@ -231,7 +231,7 @@ MonoBehaviour:
   attackPoint: {fileID: 5854960385983442980}
   weaponCamera: {fileID: 5701840210006434173}
   playerSounds: {fileID: 9168834322389676314}
-  shootForce: 75
+  shootForce: 50
   upwardForce: 0
   timeBetweenShooting: 0.2
   spread: 0.2
