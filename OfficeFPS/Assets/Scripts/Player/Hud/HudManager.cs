@@ -54,9 +54,12 @@ public class HudManager : MonoBehaviour
         }
 
         if (hitMarker != null)
-            {
-                hitMarker.enabled = false;
-            }
+        {
+            hitMarker.enabled = false;
+            Color hmc = hitMarker.color;
+            hmc.a = 0f;
+            hitMarker.color = hmc;
+        }
 
         if (speedLines != null)
         {
@@ -115,6 +118,9 @@ public class HudManager : MonoBehaviour
     private IEnumerator HitMarkerRoutine()
     {
         hitMarker.enabled = true;
+        Color hmc = hitMarker.color;
+        hmc.a = 1f;
+        hitMarker.color = hmc;
 
         yield return new WaitForSeconds(hitMarkerDuration);
 

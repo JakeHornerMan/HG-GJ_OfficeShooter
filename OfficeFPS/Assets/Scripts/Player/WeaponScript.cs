@@ -106,7 +106,7 @@ public class WeaponScript : MonoBehaviour
         //Instantiate bullet
         RGBSettings firedBullet = magazineQueue.Dequeue();
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
-        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, firedBullet); // Set the owner tag for the bullet
+        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, firedBullet, this); // Set the owner tag for the bullet
         playerSounds.PlayGunShotSound();
 
         //Add force to bullet
@@ -171,6 +171,11 @@ public class WeaponScript : MonoBehaviour
         readyToShoot = true;
         shotRestCoroutine = null;
         Debug.Log($"Shot Reset complete, readyToShoot: {readyToShoot}");
+    }
+
+    public void HitEnemy()
+    {
+        hudManager.ShowHitMarker();
     }
 
     private Coroutine reloadCoroutine;

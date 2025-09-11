@@ -7,6 +7,7 @@ public class Bullet : MonoBehaviour
     private Rigidbody rb;
     private string ownerTag;
     public Material material;
+    public WeaponScript weaponScript;
 
     [Header("Materials")]
     public Material redMaterial;
@@ -31,8 +32,9 @@ public class Bullet : MonoBehaviour
 
     }
 
-    public void SpawnBullet(string ownerTag = "Environment", RGBSettings bulletType = RGBSettings.BLUE)
+    public void SpawnBullet(string ownerTag = "Environment", RGBSettings bulletType = RGBSettings.BLUE, WeaponScript thisWeapon = null)
     {
+        weaponScript = thisWeapon;
         this.ownerTag = ownerTag;
         bulletColor = bulletType;
         Debug.Log($"[Bullet] Spawned by {ownerTag} with color {bulletType}");
@@ -75,6 +77,10 @@ public class Bullet : MonoBehaviour
                 player.TakeDamage(baseDamage);
                 Debug.Log($"[Player] Applied {baseDamage} damage.");
                 EndLife();
+                if(weaponScript != null)
+                {
+                    weaponScript.HitEnemy();
+                }
                 return;
             }
         }
@@ -88,6 +94,10 @@ public class Bullet : MonoBehaviour
                 enemy.TakeDamage(baseDamage, bulletColor);
                 Debug.Log($"[Enemy] Applied {baseDamage} damage.");
                 EndLife();
+                if(weaponScript != null)
+                {
+                    weaponScript.HitEnemy();
+                }
                 return;
             }
         }
