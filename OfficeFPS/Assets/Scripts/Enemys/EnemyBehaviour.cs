@@ -31,6 +31,9 @@ public class EnemyBehaviour : MonoBehaviour
     public float sightRangeHunting;
     public float huntPlayerCheckTime = 5f;
 
+    [Header("Enemy Type")]
+    public bool isSniper = false;
+
     private void Awake()
     {
         sightRangeHunting = sightRange * 2;
@@ -161,8 +164,10 @@ public class EnemyBehaviour : MonoBehaviour
 
     public bool FindPlayer()
     {
-        Vector3 origin = transform.position + Vector3.up * 1.0f; // lift ray slightly so it's not at ground level
-        Vector3 direction = (player.position - origin).normalized;
+        Vector3 origin = transform.position;
+        Vector3 playerPos = player.position;
+        playerPos.y = +1.5f;
+        Vector3 direction = (playerPos - origin).normalized;
 
         Debug.DrawRay(origin, direction * sightRangeHunting, Color.cyan, 1f);
 
@@ -180,7 +185,7 @@ public class EnemyBehaviour : MonoBehaviour
         return false;
     }
 
-    public void Hunting()
+    private void Hunting()
     {
         if (!lastPositionSet)
         {
@@ -191,16 +196,13 @@ public class EnemyBehaviour : MonoBehaviour
         if (lastPositionSet)
             agent.SetDestination(lastKnownPosition);
 
+
         Vector3 distanceToLastKnownPosition = transform.position - lastKnownPosition;
 
         //Walkpoint reached
         if (distanceToLastKnownPosition.magnitude < 1f)
         {
-            Debug.Log("[EnemyBehaviour] : Patroling | Reached walkPoint");
-            isHunting = false;
-            bool didNotFindPlayer = FindPlayer();
-            lastPositionSet = false;
-            lastKnownPosition = Vector3.zero;
+            FinishHunting();
         }
 
     }
@@ -220,8 +222,51 @@ public class EnemyBehaviour : MonoBehaviour
     private IEnumerator LookForPlayerRoutine()
     {
         yield return new WaitForSeconds(huntPlayerCheckTime);
-        if (!FindPlayer())
+
+        bool answer = FindPlayer();
+
+        if (!answer)
+        {
+            Debug.Log($"[EnemyBehaviour] LookForPlayerRoutine | isHunting: {isHunting} | FindPlayer = {answer}");
             HuntingPlayerLook();
+        }
+        else
+        {
+            if (isSniper)
+            {
+                SniperStopHuntAndAttack();
+            }
+            else
+            {
+                HuntingAndAttacking();
+            }
+        }
+    }
+
+    public void HuntingAndAttacking()
+    {
+        Debug.Log($"[EnemyBehaviour] HuntingAndAttacking | isHunting: {isHunting}");
+        Vector3 targetPoint = player.position;
+        targetPoint.y = 1.5f;
+        enemyCombat.Attack(targetPoint);
+    }
+
+    private void FinishHunting()
+    {
+        Debug.Log("[EnemyBehaviour] : FinishHunting | Reached walkPoint");
+        isHunting = false;
+        lastPositionSet = false;
+        lastKnownPosition = Vector3.zero;
+    }
+
+    private void SniperStopHuntAndAttack()
+    {
+        Debug.Log($"[EnemyBehaviour] SniperStopHuntAndAttack | isHunting: {isHunting}");
+        FinishHunting();
+        agent.SetDestination(player.position);
+        Vector3 targetPoint = player.position;
+        targetPoint.y = 1.5f;
+        enemyCombat.Attack(targetPoint);
     }
 
 }

@@ -95,7 +95,7 @@ MonoBehaviour:
   isHunting: 0
   sightRangeHunting: 0
   huntPlayerCheckTime: 5
-  canAttackWhileHunting: 0
+  isSniper: 0
 --- !u!114 &3333041003147369694
 MonoBehaviour:
   m_ObjectHideFlags: 0
