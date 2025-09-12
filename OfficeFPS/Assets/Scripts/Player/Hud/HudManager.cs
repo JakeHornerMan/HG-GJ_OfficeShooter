@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 
 public class HudManager : MonoBehaviour
 {
@@ -9,7 +10,12 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Image hitMarker;
     [SerializeField] private Image speedLines;
     [SerializeField] private Image shieldIcon;
-    [SerializeField] private TextMeshProUGUI ammoCountText;
+    [SerializeField] private TextMeshProUGUI ammoCountText1;
+
+    [SerializeField] private Image leftAmmoIndicator;
+    [SerializeField] private TextMeshProUGUI ammoCountText2;
+
+    [SerializeField] private Image rightAmmoIndicator;
     [SerializeField] private Image BoostRadial;
     [SerializeField] private Image BoostIcon;
     [SerializeField] private Image healthBar;
@@ -18,6 +24,16 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Image shieldDamageIndicator;
     [SerializeField] private TextMeshProUGUI healthAmountText;
     [SerializeField] private TextMeshProUGUI shieldAmountText;
+
+    [SerializeField] public GameObject ammoIconPrefab; 
+
+    [SerializeField] public Transform magazineUIParent;
+    private Queue<RGBSettings> magazineQueue = new Queue<RGBSettings>();
+    private List<Image> activeIcons = new List<Image>();
+
+    // [SerializeField] public Transform magazineUIParent2;
+    // private Queue<RGBSettings> magazineQueue2 = new Queue<RGBSettings>();
+    // private List<Image> activeIcons2 = new List<Image>();
 
 
     [Header("Settings")]
@@ -172,33 +188,57 @@ public class HudManager : MonoBehaviour
         dodgeHudCoroutine = null;
     }
 
-    public void UpdateAmmoCount(int maxAmmo, int currentAmmo, RGBSettings bulletType)
+    public void UpdateAmmoCount1(int maxAmmo, int currentAmmo, RGBSettings bulletType)
     {
-        if (ammoCountText != null)
+        if (ammoCountText1 != null)
         {
-            ammoCountText.text = $"{maxAmmo} / {currentAmmo}";
-            SetColorAmmoCount(bulletType);
+            ammoCountText1.text = $"{maxAmmo} / {currentAmmo}";
+            SetColorAmmoCount(bulletType, ammoCountText1, leftAmmoIndicator);
         }
     }
 
-    public void SetColorAmmoCount(RGBSettings bulletType)
+    public void UpdateAmmoCount2(int maxAmmo, int currentAmmo, RGBSettings bulletType)
+    {
+        if (ammoCountText2 != null)
+        {
+            ammoCountText2.text = $"{maxAmmo} / {currentAmmo}";
+            SetColorAmmoCount(bulletType, ammoCountText2, rightAmmoIndicator);
+        }
+    }
+
+    public void SetColorAmmoCount(RGBSettings bulletType, TextMeshProUGUI ammoCountText, Image ammoIndicator)
     {
         if (ammoCountText != null)
         {
+            ammoIndicator.enabled = true;
+            Color targetColor;
+
             switch (bulletType)
             {
                 case RGBSettings.RED:
-                    ammoCountText.color = Color.red;
+                    targetColor = Color.red;
                     break;
                 case RGBSettings.GREEN:
-                    ammoCountText.color = Color.green;
+                    targetColor = Color.green;
                     break;
                 case RGBSettings.BLUE:
-                    ammoCountText.color = Color.blue;
+                    targetColor = Color.blue;
                     break;
                 default:
-                    ammoCountText.color = Color.white;
+                    targetColor = Color.white;
+                    ammoIndicator.enabled = false;
                     break;
+            }
+
+            // Apply to text (full alpha)
+            ammoCountText.color = targetColor;
+
+            // Apply to indicator (alpha 150 / 255)
+            if (ammoIndicator.enabled)
+            {
+                Color indicatorColor = targetColor;
+                indicatorColor.a = 150f / 255f; // ~0.59
+                ammoIndicator.color = indicatorColor;
             }
         }
     }
@@ -391,5 +431,53 @@ public class HudManager : MonoBehaviour
         shieldDamageIndicator.enabled = false;
 
         shieldDamageCoroutine = null;
+    }
+
+    public void LoadMagazine(IEnumerable<RGBSettings> bullets)
+    {
+        // Clear old
+        magazineQueue.Clear();
+        foreach (var icon in activeIcons)
+            Destroy(icon.gameObject);
+        activeIcons.Clear();
+
+        // Load new
+        foreach (var bullet in bullets)
+        {
+            magazineQueue.Enqueue(bullet);
+            SpawnIcon(bullet);
+        }
+    }
+
+    private void SpawnIcon(RGBSettings bulletType)
+    {
+        GameObject iconGO = Instantiate(ammoIconPrefab, magazineUIParent);
+        Image img = iconGO.GetComponent<Image>();
+
+        // Color based on bullet type
+        switch (bulletType)
+        {
+            case RGBSettings.RED: img.color = new Color(1f, 0f, 0f, 0.6f); break;
+            case RGBSettings.GREEN: img.color = new Color(0f, 1f, 0f, 0.6f); break;
+            case RGBSettings.BLUE: img.color = new Color(0f, 0f, 1f, 0.6f); break;
+        }
+
+        activeIcons.Add(img);
+    }
+
+    public void UseBullet()
+    {
+        if (magazineQueue.Count == 0) return;
+
+        // Remove from queue
+        magazineQueue.Dequeue();
+
+        // Remove first icon in UI
+        if (activeIcons.Count > 0)
+        {
+            Image firstIcon = activeIcons[0];
+            activeIcons.RemoveAt(0);
+            Destroy(firstIcon.gameObject);
+        }
     }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - DamageTouch
   - Enemy
+  - Bullet
   layers:
   - Default
   - TransparentFX
