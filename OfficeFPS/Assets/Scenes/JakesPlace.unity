@@ -1927,7 +1927,7 @@ GameObject:
   m_Layer: 0
   m_Name: Enemy (2)
   m_TagString: Enemy
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -3187,7 +3187,7 @@ GameObject:
   m_Layer: 0
   m_Name: Enemy (1)
   m_TagString: Enemy
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -4924,7 +4924,7 @@ GameObject:
   m_Layer: 0
   m_Name: Enemy (4)
   m_TagString: Enemy
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -5968,7 +5968,7 @@ GameObject:
   m_Layer: 0
   m_Name: Enemy (3)
   m_TagString: Enemy
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -7665,7 +7665,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 604825695935874902, guid: e91085b12e174164b80d15d1c6289d87, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.1
+      value: -0.66
       objectReference: {fileID: 0}
     - target: {fileID: 604825695935874902, guid: e91085b12e174164b80d15d1c6289d87, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7685,7 +7685,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 604825695935874902, guid: e91085b12e174164b80d15d1c6289d87, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 14.19
+      value: 8.93
       objectReference: {fileID: 0}
     - target: {fileID: 604825695935874902, guid: e91085b12e174164b80d15d1c6289d87, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -7703,6 +7703,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6634986721859724073, guid: e91085b12e174164b80d15d1c6289d87, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 6634986721859724073, guid: e91085b12e174164b80d15d1c6289d87, type: 3}
       propertyPath: m_Name
       value: Enemy

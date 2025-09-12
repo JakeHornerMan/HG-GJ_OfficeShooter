@@ -46,11 +46,11 @@ public class EnemyBehaviour : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (!playerInSightRange & isHunting)
-        {
-            playerInSightRange = FindPlayer();    
-            Debug.Log($"[EnemyBehaviour] : isHunting | LongRangeChase playerInSightRange = {playerInSightRange}");
-        }
+        // if (!playerInSightRange & isHunting)
+        // {
+        //     playerInSightRange = FindPlayer();    
+        //     Debug.Log($"[EnemyBehaviour] : isHunting | LongRangeChase playerInSightRange = {playerInSightRange}");
+        // }
 
         Debug.Log($"[EnemyBehaviour] : Update | sightRange: {playerInSightRange}, attackRange: {playerInAttackRange}");
 
