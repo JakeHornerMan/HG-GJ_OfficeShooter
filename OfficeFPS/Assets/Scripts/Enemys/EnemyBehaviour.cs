@@ -32,6 +32,7 @@ public class EnemyBehaviour : MonoBehaviour
     public float huntPlayerCheckTime = 5f;
 
     [Header("Enemy Type")]
+    public bool isGunner = false;
     public bool isSniper = false;
 
     private void Awake()
@@ -41,6 +42,9 @@ public class EnemyBehaviour : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         enemyCombat = GetComponent<EnemyCombat>();
         Debug.Log($"[EnemyBehaviour] : Awake | Found player: {player.name}, Agent assigned: {agent != null}");
+        isHunting = false;
+        isGunner = gameObject.name.Contains("Gunner");
+        isSniper = gameObject.name.Contains("Sniper");
     }
 
     private void Update()
@@ -246,9 +250,12 @@ public class EnemyBehaviour : MonoBehaviour
     public void HuntingAndAttacking()
     {
         Debug.Log($"[EnemyBehaviour] HuntingAndAttacking | isHunting: {isHunting}");
-        Vector3 targetPoint = player.position;
-        targetPoint.y = 1.5f;
-        enemyCombat.Attack(targetPoint);
+        if (isGunner)
+        {
+            Vector3 targetPoint = player.position;
+            targetPoint.y = 1.5f;
+            enemyCombat.Attack(targetPoint);   
+        }
     }
 
     private void FinishHunting()

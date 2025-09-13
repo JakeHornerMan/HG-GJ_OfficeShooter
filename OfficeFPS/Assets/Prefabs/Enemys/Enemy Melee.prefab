@@ -84,7 +84,7 @@ MonoBehaviour:
   enemyCombat: {fileID: 0}
   walkPoint: {x: 0, y: 0, z: 0}
   walkPointRange: 5
-  stopAndAttack: 1
+  stopAndAttack: 0
   timeBetweenAttacks: 2
   sightRange: 30
   attackRange: 2
