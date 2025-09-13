@@ -7,7 +7,9 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     public Transform groundCheck;
-    public LayerMask groundMask;
+    [SerializeField] private LayerMask[] groundMasks;
+    private int combinedMask;
+
     public Camera playerCamera;
     private Rigidbody rb;
     public Transform box;
@@ -46,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         isDodging = false;
         isJumping = false;
+
+        foreach (var mask in groundMasks)
+            combinedMask |= mask.value;
     }
 
     void Update()
@@ -78,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void GroundCheck()
     {
-        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, groundMask);
+        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, combinedMask);
         bool grounded = colliders.Length > 0;
 
         if (!isGrounded && grounded)
