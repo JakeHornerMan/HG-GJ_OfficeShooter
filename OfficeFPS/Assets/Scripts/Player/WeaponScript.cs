@@ -18,6 +18,7 @@ public class WeaponScript : MonoBehaviour
     [SerializeField] public float upwardForce = 0f;
 
     [Header("Gun Settings")]
+    [SerializeField] public bool isLeftGun = false;
     [SerializeField] public float timeBetweenShooting = 0.3f;
     [SerializeField] public float spread = 0.2f;
     [SerializeField] public float reloadTime = 1f;
@@ -48,7 +49,14 @@ public class WeaponScript : MonoBehaviour
         reloading = false;
         ManageMagazine();
         RGBSettings nextBullet = magazineQueue.Peek();
-        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft, nextBullet);
+        if (isLeftGun)
+        {
+            hudManager.UpdateAmmoCount1(magazineSize, bulletsLeft, nextBullet);
+        }
+        else
+        { 
+            hudManager.UpdateAmmoCount2(magazineSize, bulletsLeft, nextBullet);
+        }
     }
 
     private void Update()
@@ -58,9 +66,19 @@ public class WeaponScript : MonoBehaviour
 
     private void MyInput()
     {
-        if (Input.GetButtonDown("Fire1") && readyToShoot && !reloading && bulletsLeft > 0)
+        if (isLeftGun)
         {
-            Shoot();
+            if (Input.GetButtonDown("Fire1") && readyToShoot && !reloading && bulletsLeft > 0)
+            {
+                Shoot();
+            }
+        }
+        else
+        {
+            if (Input.GetButtonDown("Fire2") && readyToShoot && !reloading && bulletsLeft > 0)
+            {
+                Shoot();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R) && readyToShoot && bulletsLeft < magazineSize && !reloading)
@@ -68,9 +86,19 @@ public class WeaponScript : MonoBehaviour
             Reload();
         }
 
-        if (Input.GetButtonDown("Fire1") && readyToShoot && bulletsLeft <= 0 && !reloading)
+        if (isLeftGun)
         {
-            Reload();
+            if (Input.GetButtonDown("Fire1") && readyToShoot && bulletsLeft <= 0 && !reloading)
+            {
+                Reload();
+            }
+        }
+        else
+        { 
+            if (Input.GetButtonDown("Fire2") && readyToShoot && bulletsLeft <= 0 && !reloading)
+            {
+                Reload();
+            }
         }
     }
 
@@ -106,7 +134,7 @@ public class WeaponScript : MonoBehaviour
         //Instantiate bullet
         RGBSettings firedBullet = magazineQueue.Dequeue();
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
-        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, firedBullet); // Set the owner tag for the bullet
+        currentBullet.GetComponent<Bullet>().SpawnBullet("Player", firedBullet, this, null); // Set the owner tag for the bullet
         playerSounds.PlayGunShotSound();
 
         //Add force to bullet
@@ -124,7 +152,15 @@ public class WeaponScript : MonoBehaviour
            nextBullet = magazineQueue.Peek();
         }
 
-        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft, nextBullet);
+        if (isLeftGun)
+        {
+            hudManager.UpdateAmmoCount1(magazineSize, bulletsLeft, nextBullet);
+            hudManager.UseBullet();
+        }
+        else
+        { 
+            hudManager.UpdateAmmoCount2(magazineSize, bulletsLeft, nextBullet);
+        }
 
         ShotReset(timeBetweenShooting);
     }
@@ -171,6 +207,11 @@ public class WeaponScript : MonoBehaviour
         readyToShoot = true;
         shotRestCoroutine = null;
         Debug.Log($"Shot Reset complete, readyToShoot: {readyToShoot}");
+    }
+
+    public void HitEnemy()
+    {
+        hudManager.ShowHitMarker();
     }
 
     private Coroutine reloadCoroutine;
@@ -222,7 +263,16 @@ public class WeaponScript : MonoBehaviour
         reloadCoroutine = null;
         readyToShoot = true;
         RGBSettings nextBullet = magazineQueue.Peek();
-        hudManager.UpdateAmmoCount(magazineSize, bulletsLeft, nextBullet);
+
+        if (isLeftGun)
+        {
+            hudManager.UpdateAmmoCount1(magazineSize, bulletsLeft, nextBullet);
+        }
+        else
+        { 
+            hudManager.UpdateAmmoCount2(magazineSize, bulletsLeft, nextBullet);
+        }
+
         Debug.Log($"Reload complete, readyToShoot: {readyToShoot}");
     }
 
@@ -258,6 +308,8 @@ public class WeaponScript : MonoBehaviour
         {
             magazineQueue.Enqueue(bullet);
         }
+        
+        hudManager.LoadMagazine(tempList);
 
         Debug.Log($"[ManageMagazine] New magazine created with {magazineSize} bullets: {string.Join(", ", magazineQueue)}");
     }

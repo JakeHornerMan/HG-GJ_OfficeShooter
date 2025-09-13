@@ -7,7 +7,9 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
     public Transform groundCheck;
-    public LayerMask groundMask;
+    [SerializeField] private LayerMask[] groundMasks;
+    private int combinedMask;
+
     public Camera playerCamera;
     private Rigidbody rb;
     public Transform box;
@@ -46,6 +48,9 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         isDodging = false;
         isJumping = false;
+
+        foreach (var mask in groundMasks)
+            combinedMask |= mask.value;
     }
 
     void Update()
@@ -67,11 +72,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        
-    }
-
     #region Functionality
     private void GetInput()
     {
@@ -83,14 +83,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void GroundCheck()
     {
-        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, groundMask);
+        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundDistance, combinedMask);
         bool grounded = colliders.Length > 0;
 
         if (!isGrounded && grounded)
         {
             lastGroundTag = colliders[0].gameObject.tag;
 
-            Debug.Log($"[GroundCheck] Landed on object: {colliders[0].gameObject.name}, tag: {lastGroundTag}");
+            // Debug.Log($"[GroundCheck] Landed on object: {colliders[0].gameObject.name}, tag: {lastGroundTag}");
 
             mouseMovement.StartBounce();
             isJumping = false;
@@ -172,12 +172,13 @@ public class PlayerMovement : MonoBehaviour
     private bool CheckForWall()
     {
         float checkDistance = 0.35f;
-        Vector3 origin = transform.position + Vector3.up * 0.5f; // lift raycast a bit to avoid floor
+        Vector3 halfExtents = new Vector3(0.3f, 0.5f, 0.3f); // half of (0.6, 1, 0.6)
+        Vector3 origin = transform.position + Vector3.up * halfExtents.y; // center at player's chest
         Vector3 direction = transform.forward;
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, checkDistance))
+        if (Physics.BoxCast(origin, halfExtents, direction, out RaycastHit hit, transform.rotation, checkDistance))
         {
-            Debug.Log($"[WallCheck] Hit {hit.collider.name} at distance {hit.distance}");
+            Debug.Log($"[WallCheck] Box hit {hit.collider.name} at distance {hit.distance}");
             return true;
         }
 
