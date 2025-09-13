@@ -288,6 +288,7 @@ MonoBehaviour:
   isHunting: 0
   sightRangeHunting: 0
   huntPlayerCheckTime: 5
+  isGunner: 0
   isSniper: 0
 --- !u!114 &7239927391362062064
 MonoBehaviour:
@@ -322,7 +323,7 @@ NavMeshAgent:
   m_Radius: 0.5
   m_Speed: 3
   m_Acceleration: 5
-  avoidancePriority: 50
+  avoidancePriority: 99
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
@@ -570,7 +571,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
