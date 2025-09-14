@@ -15,6 +15,11 @@ public class Bullet : MonoBehaviour
     public Material greenMaterial;
     public Material blueMaterial;
 
+    [Header("Particles")]
+    public GameObject redParticles;
+    public GameObject greenParticles;
+    public GameObject blueParticles;
+
     [Header("Settings")]
     public float lifeTime = 10f;          // Auto-destroy after this time
     public float baseDamage = 15f;           // Damage applied on hit
@@ -51,30 +56,67 @@ public class Bullet : MonoBehaviour
         bulletColor = bulletType;
         Debug.Log($"[Bullet] Spawned by {ownerTag} with color {bulletType}");
 
-        // Select material based on enum
+        // // Select material based on enum
+        // Material chosenMat = null;
+        // switch (bulletType)
+        // {
+        //     case RGBSettings.RED:   chosenMat = redMaterial; break;
+        //     case RGBSettings.GREEN: chosenMat = greenMaterial; break;
+        //     case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
+        // }
+        SetVisual(bulletColor);
+        EndLife(lifeTime);
+    }
+
+    public void SetVisual(RGBSettings bulletType)
+    { 
+        // Select material & particles based on enum
         Material chosenMat = null;
+        GameObject chosenParticles = null;
+
         switch (bulletType)
         {
-            case RGBSettings.RED:   chosenMat = redMaterial; break;
-            case RGBSettings.GREEN: chosenMat = greenMaterial; break;
-            case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
-        }
+            case RGBSettings.RED:   
+                chosenMat = redMaterial; 
+                chosenParticles = redParticles;
+                break;
 
+            case RGBSettings.GREEN: 
+                chosenMat = greenMaterial; 
+                chosenParticles = greenParticles;
+                break;
+
+            case RGBSettings.BLUE:  
+                chosenMat = blueMaterial; 
+                chosenParticles = blueParticles;
+                break;
+        }
+        
         if (chosenMat != null)
         {
-            GetComponent<Renderer>().material = chosenMat; 
+            GetComponent<Renderer>().material = chosenMat;
         }
         else
         {
             Debug.LogWarning("[Bullet] No material assigned for " + bulletType);
         }
 
-        EndLife(lifeTime);
+        // Enable particles
+        if (chosenParticles != null)
+        {
+            chosenParticles.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("[Bullet] No particles assigned for " + bulletType);
+        }
+
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        if (ownerTag == "Player") {
+        if (ownerTag == "Player")
+        {
             Debug.Log($"[Bullet] OnCollisonEnter hit {other.gameObject.tag} time: {Time.deltaTime}");
         }
         if (other.gameObject.CompareTag("Bullet"))
@@ -83,11 +125,12 @@ public class Bullet : MonoBehaviour
             return; // Ignore other bullets
         }
 
-        if (weaponScript != null && ownerTag == "Player") {
+        if (weaponScript != null && ownerTag == "Player")
+        {
             HandlePlayerHitLogic(other);
         }
-        
-        if(enemyCombat != null)
+
+        if (enemyCombat != null)
         {
             HandleOtherHitLogic(other);
         }

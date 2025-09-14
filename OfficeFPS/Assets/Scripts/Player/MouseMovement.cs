@@ -53,13 +53,6 @@ public class MouseMovement : MonoBehaviour
     {
         Look();
         HandleSensitivityChange();
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            testEnemy.SetActive(true);
-            testEnemy.GetComponent<EnemyHealth>().AwakeEnemy();
-            testEnemy.transform.position = new Vector3(0f, 2f, 0f);
-        }
     }
 
     #region Look Controls
