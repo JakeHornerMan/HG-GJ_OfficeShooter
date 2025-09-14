@@ -9,8 +9,9 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private GameObject deathEffectParticles;
     public EnemyBehaviour enemyBehaviour;
     public Renderer[] renderers;
-
     public Vector3 shadowRealm = new Vector3(100f, -100f, 100f);
+    public GameObject healthPrefab;
+    public GameObject shieldPrefab;
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
@@ -65,6 +66,14 @@ public class EnemyHealth : MonoBehaviour
         if (bulletType == enemyType)
         {
             Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
+            if (bulletType == RGBSettings.BLUE)
+            {
+                DropShield();
+            }
+            if(bulletType == RGBSettings.GREEN)
+            {
+                DropHealth();
+            }
         }
 
         currentHealth -= amount;
@@ -77,6 +86,39 @@ public class EnemyHealth : MonoBehaviour
             Die();
         }
     }
+
+    private void DropShield()
+    {
+        if (shieldPrefab == null)
+        {
+            Debug.LogWarning($"[EnemyHealth] {gameObject.name} has no shieldPrefab assigned!");
+            return;
+        }
+
+        // Spawn at enemy’s position + small offset (so it doesn’t clip into the ground)
+        Vector3 dropPos = transform.position;
+        dropPos.y += 0.5f;
+
+        Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Shield Pickup!");
+    }
+
+    private void DropHealth()
+    {
+        if (healthPrefab == null)
+        {
+            Debug.LogWarning($"[EnemyHealth] {gameObject.name} has no healthPrefab assigned!");
+            return;
+        }
+
+        Vector3 dropPos = transform.position;
+        dropPos.y += 0.5f;
+
+        Instantiate(healthPrefab, dropPos, Quaternion.identity);
+        Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Health Pickup!");
+    }
+
+    
 
     public void AddHealth(float amount)
     {

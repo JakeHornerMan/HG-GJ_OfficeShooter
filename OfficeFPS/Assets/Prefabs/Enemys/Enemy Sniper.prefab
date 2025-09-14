@@ -476,6 +476,8 @@ MonoBehaviour:
   enemyBehaviour: {fileID: 6003423811361270701}
   renderers: []
   shadowRealm: {x: 100, y: -100, z: 100}
+  healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
+  shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
   maxHealth: 90
   enemyType: 2
   isDead: 1
