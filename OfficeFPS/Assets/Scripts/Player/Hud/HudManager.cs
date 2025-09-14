@@ -23,6 +23,8 @@ public class HudManager : MonoBehaviour
     [SerializeField] private Image shieldDamageIndicator;
     [SerializeField] private TextMeshProUGUI healthAmountText;
     [SerializeField] private TextMeshProUGUI shieldAmountText;
+    [SerializeField] private TextMeshProUGUI interactUI;
+    [SerializeField] private TextMeshProUGUI infoText;
 
     [SerializeField] public GameObject ammoIconPrefab;
 
@@ -128,6 +130,15 @@ public class HudManager : MonoBehaviour
             speedLines.color = sdc;
         }
 
+        if (interactUI != null)
+        {
+            interactUI.enabled = false;
+        }
+
+        if (infoText != null)
+        {
+            interactUI.enabled = false;
+        }
     }
 
     public void ShowHitMarker()
@@ -292,7 +303,8 @@ public class HudManager : MonoBehaviour
         }
     }
 
-    public void SetColorAndAmmoCountForReloading2(){
+    public void SetColorAndAmmoCountForReloading2()
+    {
         if (ammoCountText2 != null)
         {
             ammoCountText2.text = $"/ 0 0";
@@ -421,7 +433,7 @@ public class HudManager : MonoBehaviour
         if (shieldBar == null) return;
 
         float targetFill = Mathf.Clamp01(currentShield / maxShield);
-        
+
         if (shieldAmountText != null)
         {
             shieldAmountText.text = $"{Mathf.RoundToInt(currentShield)} / {Mathf.RoundToInt(maxShield)}";
@@ -573,5 +585,76 @@ public class HudManager : MonoBehaviour
             activeIcons.RemoveAt(0);
             Destroy(firstIcon.gameObject);
         }
+    }
+
+    public void ShowInteractUi(bool enable)
+    {
+        if (interactUI != null)
+        {
+            interactUI.enabled = enable;
+        }
+    }
+    
+    public void InformPlayer(string message)
+    {
+        if (infoText == null) return;
+
+        // Stop any running message
+        if (informCoroutine != null)
+            StopCoroutine(informCoroutine);
+
+        informCoroutine = StartCoroutine(InformPlayerRoutine(message));
+    }
+
+    private Coroutine informCoroutine;
+
+    private IEnumerator InformPlayerRoutine(string message)
+    {
+        // Set message and enable text
+        infoText.text = message;
+        infoText.enabled = true;
+
+        Color c = infoText.color;
+        c.a = 0f;
+        infoText.color = c;
+
+        float fadeInDuration = 1f;
+        float holdDuration = 3f;
+        float fadeOutDuration = 1f;
+
+        // Fade in
+        float elapsed = 0f;
+        while (elapsed < fadeInDuration)
+        {
+            float t = elapsed / fadeInDuration;
+            c.a = Mathf.Lerp(0f, 1f, t);
+            infoText.color = c;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        c.a = 1f;
+        infoText.color = c;
+
+        // Hold
+        yield return new WaitForSeconds(holdDuration);
+
+        // Fade out
+        elapsed = 0f;
+        while (elapsed < fadeOutDuration)
+        {
+            float t = elapsed / fadeOutDuration;
+            c.a = Mathf.Lerp(1f, 0f, t);
+            infoText.color = c;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Reset
+        c.a = 0f;
+        infoText.color = c;
+        infoText.text = "";
+        infoText.enabled = false;
+
+        informCoroutine = null;
     }
 }

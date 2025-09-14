@@ -24,7 +24,8 @@ public class PlayerSounds : MonoBehaviour
         shieldHitSound,
         gunShotSound,
         reloadSound,
-        reloadFinsishedSound
+        reloadFinsishedSound,
+        infoNoise
     ;
     [SerializeField] public SoundConfig[] hurtConfigs;
 
@@ -48,6 +49,7 @@ public class PlayerSounds : MonoBehaviour
     public void PlayShieldPickUpSound() => PlaySoundOnce(shieldPickUpSound);
     public void PlayReloadSound() => PlaySoundOnce(reloadSound);
     public void PlayReloadFinishedSound() => PlaySoundOnce(reloadFinsishedSound);
+    public void PlayInformPlayer() => PlaySoundOnce(infoNoise);
 
     //Random sound plays
     public void PlayHurtSound() => RandomPlaySound(hurtConfigs);

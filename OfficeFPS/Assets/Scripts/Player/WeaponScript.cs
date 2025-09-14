@@ -175,7 +175,7 @@ public class WeaponScript : MonoBehaviour
 
     private void ShotReset(float duration)
     {
-        Debug.Log($"Shot Reset called, readyToShoot: {readyToShoot}");
+        // Debug.Log($"Shot Reset called, readyToShoot: {readyToShoot}");
         if (shotRestCoroutine == null && readyToShoot == false)
             shotRestCoroutine = StartCoroutine(ShotResetRoutine(timeBetweenShooting));
     }
@@ -212,7 +212,7 @@ public class WeaponScript : MonoBehaviour
 
         readyToShoot = true;
         shotRestCoroutine = null;
-        Debug.Log($"Shot Reset complete, readyToShoot: {readyToShoot}");
+        // Debug.Log($"Shot Reset complete, readyToShoot: {readyToShoot}");
     }
 
     public void SuccessfulHitEnemy()
@@ -230,7 +230,7 @@ public class WeaponScript : MonoBehaviour
     private Coroutine reloadCoroutine;
     public void Reload()
     {
-        Debug.Log($"Relaod called, readyToShoot: {readyToShoot}, bulletsLeft: {bulletsLeft}, reloading: {reloading}");
+        // Debug.Log($"Relaod called, readyToShoot: {readyToShoot}, bulletsLeft: {bulletsLeft}, reloading: {reloading}");
         if (reloadCoroutine == null && readyToShoot == true && reloading == false)
         {
             if (isLeftGun)
@@ -250,7 +250,7 @@ public class WeaponScript : MonoBehaviour
     {
         reloading = true;
         readyToShoot = false;
-        Debug.Log($"Reload started, reloading: {reloading}, readyToShoot: {readyToShoot}");
+        // Debug.Log($"Reload started, reloading: {reloading}, readyToShoot: {readyToShoot}");
 
         float elapsed = 0f;
         Quaternion startRot = playerGun.transform.localRotation;
@@ -294,7 +294,7 @@ public class WeaponScript : MonoBehaviour
             hudManager.UpdateAmmoCount2(magazineSize, bulletsLeft, nextBullet);
         }
 
-        Debug.Log($"Reload complete, readyToShoot: {readyToShoot}");
+        // Debug.Log($"Reload complete, readyToShoot: {readyToShoot}");
     }
 
     private void ManageMagazine()
