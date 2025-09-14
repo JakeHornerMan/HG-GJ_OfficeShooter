@@ -43,7 +43,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9981108, g: 1, b: 0.8901961, a: 1}
   m_Intensity: 8
   m_Range: 10
   m_SpotAngle: 179
@@ -171,7 +171,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8a674390ef70b5a428839554c00e6bd4, type: 3}
       propertyPath: m_Name
-      value: Ceiling_4x4_01
+      value: Ceiling_4x4_01_Lit
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8a674390ef70b5a428839554c00e6bd4, type: 3}
       propertyPath: m_StaticEditorFlags
