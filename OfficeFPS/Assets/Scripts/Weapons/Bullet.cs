@@ -15,11 +15,17 @@ public class Bullet : MonoBehaviour
     public Material greenMaterial;
     public Material blueMaterial;
 
+    [Header("Particles")]
+    public GameObject redParticles;
+    public GameObject greenParticles;
+    public GameObject blueParticles;
+
     [Header("Settings")]
     public float lifeTime = 10f;          // Auto-destroy after this time
-    public float baseDamage = 15f;          // Damage applied on hit
+    public float baseDamage = 15f;           // Damage applied on hit
     private Coroutine endLifeCoroutine = null;
     private RGBSettings bulletColor;
+    private int currentComboVal = 0;
 
     private void Awake()
     {
@@ -37,87 +43,181 @@ public class Bullet : MonoBehaviour
         string ownerTag = "Environment",
         RGBSettings bulletType = RGBSettings.BLUE,
         WeaponScript thisWeapon = null,
-        EnemyCombat thisEnemy = null
+        EnemyCombat thisEnemy = null,
+        float damage = 15f, 
+        int comboVal = 0
     )
     {
+        currentComboVal = comboVal;
+        baseDamage = damage;
         weaponScript = thisWeapon;
         enemyCombat = thisEnemy;
         this.ownerTag = ownerTag;
         bulletColor = bulletType;
         Debug.Log($"[Bullet] Spawned by {ownerTag} with color {bulletType}");
 
-        // Select material based on enum
+        // // Select material based on enum
+        // Material chosenMat = null;
+        // switch (bulletType)
+        // {
+        //     case RGBSettings.RED:   chosenMat = redMaterial; break;
+        //     case RGBSettings.GREEN: chosenMat = greenMaterial; break;
+        //     case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
+        // }
+        SetVisual(bulletColor);
+        EndLife(lifeTime);
+    }
+
+    public void SetVisual(RGBSettings bulletType)
+    { 
+        // Select material & particles based on enum
         Material chosenMat = null;
+        GameObject chosenParticles = null;
+
         switch (bulletType)
         {
-            case RGBSettings.RED:   chosenMat = redMaterial; break;
-            case RGBSettings.GREEN: chosenMat = greenMaterial; break;
-            case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
-        }
+            case RGBSettings.RED:   
+                chosenMat = redMaterial; 
+                chosenParticles = redParticles;
+                break;
 
+            case RGBSettings.GREEN: 
+                chosenMat = greenMaterial; 
+                chosenParticles = greenParticles;
+                break;
+
+            case RGBSettings.BLUE:  
+                chosenMat = blueMaterial; 
+                chosenParticles = blueParticles;
+                break;
+        }
+        
         if (chosenMat != null)
         {
-            GetComponent<Renderer>().material = chosenMat; 
+            GetComponent<Renderer>().material = chosenMat;
         }
         else
         {
             Debug.LogWarning("[Bullet] No material assigned for " + bulletType);
         }
 
-        EndLife(lifeTime);
+        // Enable particles
+        if (chosenParticles != null)
+        {
+            chosenParticles.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("[Bullet] No particles assigned for " + bulletType);
+        }
+
     }
 
     private void OnCollisionEnter(Collision other)
     {
+        if (ownerTag == "Player")
+        {
+            Debug.Log($"[Bullet] OnCollisonEnter hit {other.gameObject.tag} time: {Time.deltaTime}");
+        }
         if (other.gameObject.CompareTag("Bullet"))
         {
             EndLife();
             return; // Ignore other bullets
         }
 
-        if (other.gameObject.CompareTag("Player") && ownerTag != "Player")
+        if (weaponScript != null && ownerTag == "Player")
         {
-            Debug.Log($"Bullet hit Player {other.gameObject.name}");
-            HealthShieldSystem player = other.gameObject.GetComponentInParent<HealthShieldSystem>();
-            if (player != null)
-            {
-                player.TakeDamage(baseDamage);
-                Debug.Log($"[Player] Applied {baseDamage} damage.");
-                EndLife();
-                if(weaponScript != null)
-                {
-                    weaponScript.HitEnemy();
-                }
-                return;
-            }
+            HandlePlayerHitLogic(other);
         }
 
+        if (enemyCombat != null)
+        {
+            HandleOtherHitLogic(other);
+        }
+    }
+
+    private void HandlePlayerHitLogic(Collision other)
+    {
         if (other.gameObject.CompareTag("Enemy"))
         {
             Debug.Log($"Bullet hit Enemy {other.gameObject.name}");
             EnemyHealth enemy = other.gameObject.GetComponentInParent<EnemyHealth>();
             if (enemy != null)
             {
-                enemy.TakeDamage(baseDamage, bulletColor);
+                if (!enemy.isDead)
+                {
+                    enemy.TakeDamage(baseDamage, bulletColor, currentComboVal);
+                    Debug.Log($"[Enemy] Applied {baseDamage} damage.");
+                    if (enemy.enemyType == bulletColor)
+                    {
+                        weaponScript.SuccessfulHitEnemy();
+                    }
+                    else
+                    {
+                        weaponScript.UnsuccessfulHitEnemy();
+                    }
+                    EndLife();
+                    return;
+                }
+            }
+        }
+        EndLife();
+    }
+
+    private void HandleOtherHitLogic(Collision other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log($"Bullet hit Enemy {other.gameObject.name}");
+            EnemyHealth enemy = other.gameObject.GetComponentInParent<EnemyHealth>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(baseDamage, bulletColor, 0);
                 Debug.Log($"[Enemy] Applied {baseDamage} damage.");
+                enemyCombat.DidNotHitPlayer();
                 EndLife();
-                if(weaponScript != null)
-                {
-                    weaponScript.HitEnemy();
-                }
-                if(enemyCombat != null)
-                {
-                    enemyCombat.DidNotHitPlayer();
-                }
                 return;
             }
         }
-        if(enemyCombat != null)
+        if (other.gameObject.CompareTag("Player"))
         {
-            enemyCombat.DidNotHitPlayer();
+            Debug.Log($"Bullet hit Player {other.gameObject.name}");
+            HealthShieldSystem player = other.gameObject.GetComponentInParent<HealthShieldSystem>();
+            if (player != null)
+            {
+                if (player.isInvincible)
+                {
+                    RedirectBullet(other);
+                    return;
+                }
+                player.TakeDamage(baseDamage);
+                Debug.Log($"[Player] Applied {baseDamage} damage.");
+                EndLife();
+                return;
+            }
         }
-
+        enemyCombat.DidNotHitPlayer();
         EndLife();
+    }
+
+    public void RedirectBullet(Collision other)
+    {
+        if (enemyCombat != null)
+        {
+            // Calculate direction back to the enemy
+            Vector3 dirToEnemy = (enemyCombat.transform.position - transform.position).normalized;
+            dirToEnemy.y += 0.05f;
+
+            rb.linearVelocity = Vector3.zero;
+            rb.AddForce(dirToEnemy* 10f, ForceMode.Impulse);
+
+            ownerTag = "Player";
+            enemyCombat = null;
+            weaponScript = other.gameObject.GetComponentsInChildren<WeaponScript>()[0];
+            baseDamage = weaponScript.bulletDamage;
+
+            Debug.Log("[Bullet] Reflected back to enemy!");
+        }
     }
 
     private void EndLife(float duration = 0f)

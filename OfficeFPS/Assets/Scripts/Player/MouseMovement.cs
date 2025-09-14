@@ -5,9 +5,9 @@ using System.Collections;
 public class MouseMovement : MonoBehaviour
 {
     [Header("References")]
-    // public Camera playerCamera;
     public GameObject playerCamera;
     public PlayerMovement playerMovement;
+    public HudManager hudManager;
 
     [Header("Input Settings")]
     public float mouseSensitivity = 100f;
@@ -15,6 +15,10 @@ public class MouseMovement : MonoBehaviour
     public float bottomClamp = 60f;
     private float xRotation = 0f;
     private float yRotation = 0f;
+
+    [Header("Ineteractable Settings")]
+    public float interactableReach = 1f;
+    private Interactable currentInteractable;
 
     private MouseSpeed currentSetting = MouseSpeed.Setting3;
 
@@ -53,12 +57,11 @@ public class MouseMovement : MonoBehaviour
     {
         Look();
         HandleSensitivityChange();
+        SearchForInteractable();
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            testEnemy.SetActive(true);
-            testEnemy.GetComponent<EnemyHealth>().AwakeEnemy();
-            testEnemy.transform.position = new Vector3(0f, 2f, 0f);
+            UseInteractable();
         }
     }
 
@@ -77,6 +80,43 @@ public class MouseMovement : MonoBehaviour
         
         this.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, zRotation);
+    }
+
+    private void SearchForInteractable()
+    {
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, interactableReach))
+        {
+            if (hit.collider.CompareTag("Interactable"))
+            {
+                currentInteractable = hit.collider.GetComponent<Interactable>();
+
+                if (hudManager != null && currentInteractable.hasInteracted == false)
+                {
+                    hudManager.ShowInteractUi(currentInteractable != null);
+                }
+
+                return; // don’t disable UI yet, we found something
+            }
+        }
+
+        // nothing found
+        currentInteractable = null;
+        if (hudManager != null)
+        {
+            hudManager.ShowInteractUi(false);
+        }
+    }
+
+    private void UseInteractable()
+    {
+        if (currentInteractable != null)
+        {
+            Debug.Log($"[MouseMovement] Interacting with: {currentInteractable.name}");
+            currentInteractable.Interact();
+        }
     }
 
     private float HandleCameraTilt(float moveX, bool isDodging)
