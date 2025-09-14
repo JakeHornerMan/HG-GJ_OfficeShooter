@@ -57,7 +57,7 @@ public class EnemyHealth : MonoBehaviour
     //     return values[index];
     // }
 
-    public void TakeDamage(float amount, RGBSettings bulletType)
+    public void TakeDamage(float amount, RGBSettings bulletType, int comboVal)
     {
         if (isDead) return;
 
@@ -68,11 +68,11 @@ public class EnemyHealth : MonoBehaviour
             Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
             if (bulletType == RGBSettings.BLUE)
             {
-                DropShield();
+                DropShield(comboVal);
             }
             if(bulletType == RGBSettings.GREEN)
             {
-                DropHealth();
+                DropHealth(comboVal);
             }
         }
 
@@ -87,7 +87,7 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    private void DropShield()
+    private void DropShield(int comboVal)
     {
         if (shieldPrefab == null)
         {
@@ -99,11 +99,17 @@ public class EnemyHealth : MonoBehaviour
         Vector3 dropPos = transform.position;
         dropPos.y += 0.5f;
 
-        Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        GameObject shield = Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        HealPickup hp = shield.GetComponent<HealPickup>();
+        if (hp != null)
+        {
+            hp.amount += comboVal;    
+        }
+
         Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Shield Pickup!");
     }
 
-    private void DropHealth()
+    private void DropHealth(int comboVal)
     {
         if (healthPrefab == null)
         {
@@ -113,6 +119,13 @@ public class EnemyHealth : MonoBehaviour
 
         Vector3 dropPos = transform.position;
         dropPos.y += 0.5f;
+
+        GameObject shield = Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        HealPickup hp = shield.GetComponent<HealPickup>();
+        if (hp != null)
+        {
+            hp.amount += comboVal;    
+        }
 
         Instantiate(healthPrefab, dropPos, Quaternion.identity);
         Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Health Pickup!");

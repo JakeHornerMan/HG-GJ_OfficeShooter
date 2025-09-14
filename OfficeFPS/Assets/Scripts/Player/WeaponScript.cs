@@ -138,7 +138,7 @@ public class WeaponScript : MonoBehaviour
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
         currentBullet.GetComponent<Bullet>()
             .SpawnBullet(
-                "Player", firedBullet, this, null, Mathf.Round(bulletDamage * comboController.currentBonus)
+                "Player", firedBullet, this, null, Mathf.Round(bulletDamage * comboController.currentBonus), comboController.comboCount
             )
         ;
         playerSounds.PlayGunShotSound();

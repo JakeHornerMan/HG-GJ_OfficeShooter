@@ -6,6 +6,7 @@ public class EnemyCombat : MonoBehaviour
     public Transform attackPoint;
     public LayerMask whatIsPlayer;
     public EnemyBehaviour enemyBehaviour;
+    public EnemyHealth enemyHealth;
 
     [Header("Gun Settings")]
     public GameObject bulletPrefab;
@@ -15,8 +16,9 @@ public class EnemyCombat : MonoBehaviour
     public float upwardsSpread = 0.1f;
 
     public void Awake()
-    { 
+    {
         enemyBehaviour = GetComponent<EnemyBehaviour>();
+        enemyHealth = GetComponent<EnemyHealth>();
     }
 
     public void Attack(Vector3 targetPoint)
@@ -31,7 +33,7 @@ public class EnemyCombat : MonoBehaviour
         //Direction with spread
         Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
-        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, RGBSettings.BLUE, null, this, damage); // Set the owner tag for the bullet
+        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, enemyHealth.enemyType, null, this, damage); // Set the owner tag for the bullet
         // playerSounds.PlayGunShotSound();
 
         //Add force to bullet

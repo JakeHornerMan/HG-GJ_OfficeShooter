@@ -312,7 +312,7 @@ MonoBehaviour:
   enemyBehaviour: {fileID: 0}
   bulletPrefab: {fileID: 88591633456112314, guid: fe0805f945a53cb43b83d7f1698856b2, type: 3}
   damage: 10
-  shootForce: 30
+  shootForce: 10
   spread: 1
   upwardsSpread: 0.5
 --- !u!195 &5424467218162990153
