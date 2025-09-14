@@ -8,13 +8,12 @@ public class HudManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Image hitMarker;
+    [SerializeField] private TextMeshProUGUI comboCounter;
     [SerializeField] private Image speedLines;
     [SerializeField] private Image shieldIcon;
     [SerializeField] private TextMeshProUGUI ammoCountText1;
-
     [SerializeField] private Image leftAmmoIndicator;
     [SerializeField] private TextMeshProUGUI ammoCountText2;
-
     [SerializeField] private Image rightAmmoIndicator;
     [SerializeField] private Image BoostRadial;
     [SerializeField] private Image BoostIcon;
@@ -25,7 +24,7 @@ public class HudManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthAmountText;
     [SerializeField] private TextMeshProUGUI shieldAmountText;
 
-    [SerializeField] public GameObject ammoIconPrefab; 
+    [SerializeField] public GameObject ammoIconPrefab;
 
     [SerializeField] public Transform magazineUIParent;
     private Queue<RGBSettings> magazineQueue = new Queue<RGBSettings>();
@@ -47,6 +46,14 @@ public class HudManager : MonoBehaviour
 
     public void Start()
     {
+        if (comboCounter != null)
+        {
+            Color ccc = comboCounter.color;
+            ccc.a = 150f;
+            comboCounter.color = ccc;
+            comboCounter.enabled = false;
+            comboCounter.text = "";
+        }
         if (healthBar != null)
         {
             healthBar.enabled = true;
@@ -144,6 +151,76 @@ public class HudManager : MonoBehaviour
         hitCoroutine = null;
     }
 
+    public void UpdateComboCounter(int comboCount)
+    {
+        if (comboCounter == null) return;
+
+        // Ensure it's enabled
+        comboCounter.enabled = true;
+
+        // Set text
+        comboCounter.text = $"x{comboCount}";
+
+        // Decide color based on tier
+        Color targetColor = Color.white; // Default = common
+        if (comboCount >= 6 && comboCount <= 10)
+            targetColor = Color.green; // Uncommon
+        else if (comboCount >= 11 && comboCount <= 15)
+            targetColor = Color.blue; // Rare
+        else if (comboCount >= 16 && comboCount <= 20)
+            targetColor = new Color(0.6f, 0f, 1f); // Epic (purple)
+        else if (comboCount > 20)
+            targetColor = new Color(1f, 0.5f, 0f); // Legendary (orange)
+
+        // Force alpha back to 150f
+        targetColor.a = 150f / 255f;
+        comboCounter.color = targetColor;
+
+        // Restart pulse animation
+        if (comboPulseCoroutine != null)
+            StopCoroutine(comboPulseCoroutine);
+
+        comboPulseCoroutine = StartCoroutine(PulseComboRoutine());
+    }
+
+    private Coroutine comboPulseCoroutine;
+
+    private IEnumerator PulseComboRoutine()
+    {
+        float duration = 0.2f; // Speed of pulse
+        float elapsed = 0f;
+
+        Vector3 startScale = Vector3.one;
+        Vector3 peakScale = Vector3.one * 1.3f;
+
+        // Scale up
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            comboCounter.rectTransform.localScale = Vector3.Lerp(startScale, peakScale, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure peak reached
+        comboCounter.rectTransform.localScale = peakScale;
+
+        // Scale back down
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            comboCounter.rectTransform.localScale = Vector3.Lerp(peakScale, startScale, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Reset to normal
+        comboCounter.rectTransform.localScale = startScale;
+
+        comboPulseCoroutine = null;
+    }
+
     private Coroutine dodgeHudCoroutine;
     public void ShowDodgeHud(float duration)
     {
@@ -203,6 +280,23 @@ public class HudManager : MonoBehaviour
         {
             ammoCountText2.text = $"/ {currentAmmo} {maxAmmo}";
             SetColorAmmoCount(bulletType, ammoCountText2, rightAmmoIndicator);
+        }
+    }
+
+    public void SetColorAndAmmoCountForReloading1()
+    {
+        if (ammoCountText1 != null)
+        {
+            ammoCountText1.text = $"0 / 0";
+            SetColorAmmoCount(RGBSettings.NONE, ammoCountText1, leftAmmoIndicator);
+        }
+    }
+
+    public void SetColorAndAmmoCountForReloading2(){
+        if (ammoCountText2 != null)
+        {
+            ammoCountText2.text = $"/ 0 0";
+            SetColorAmmoCount(RGBSettings.NONE, ammoCountText2, rightAmmoIndicator);
         }
     }
 

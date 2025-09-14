@@ -14,8 +14,7 @@ public class EnemyHealth : MonoBehaviour
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private RGBSettings enemyType;
-    [SerializeField] private float damageMultiplier = 5f;
+    [SerializeField] public RGBSettings enemyType;
     public bool isDead = true;
 
     [Header("Reset Pooling Settings")]
@@ -66,7 +65,6 @@ public class EnemyHealth : MonoBehaviour
         if (bulletType == enemyType)
         {
             Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
-            amount *= damageMultiplier; // Double damage if the bullet type matches enemy type
         }
 
         currentHealth -= amount;

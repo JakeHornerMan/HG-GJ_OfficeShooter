@@ -9,6 +9,7 @@ public class EnemyCombat : MonoBehaviour
 
     [Header("Gun Settings")]
     public GameObject bulletPrefab;
+    public float damage;
     public float shootForce = 30f;
     public float spread = 1f;
     public float upwardsSpread = 0.1f;
@@ -30,7 +31,7 @@ public class EnemyCombat : MonoBehaviour
         //Direction with spread
         Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
-        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, RGBSettings.BLUE, null, this); // Set the owner tag for the bullet
+        currentBullet.GetComponent<Bullet>().SpawnBullet(gameObject.tag, RGBSettings.BLUE, null, this, damage); // Set the owner tag for the bullet
         // playerSounds.PlayGunShotSound();
 
         //Add force to bullet

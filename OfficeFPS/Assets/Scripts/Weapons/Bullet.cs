@@ -17,7 +17,7 @@ public class Bullet : MonoBehaviour
 
     [Header("Settings")]
     public float lifeTime = 10f;          // Auto-destroy after this time
-    public float baseDamage = 15f;          // Damage applied on hit
+    public float baseDamage = 15f;           // Damage applied on hit
     private Coroutine endLifeCoroutine = null;
     private RGBSettings bulletColor;
 
@@ -37,9 +37,11 @@ public class Bullet : MonoBehaviour
         string ownerTag = "Environment",
         RGBSettings bulletType = RGBSettings.BLUE,
         WeaponScript thisWeapon = null,
-        EnemyCombat thisEnemy = null
+        EnemyCombat thisEnemy = null,
+        float damage = 15f
     )
     {
+        baseDamage = damage;
         weaponScript = thisWeapon;
         enemyCombat = thisEnemy;
         this.ownerTag = ownerTag;
@@ -69,29 +71,55 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        if (ownerTag == "Player") {
+            Debug.Log($"[Bullet] OnCollisonEnter hit {other.gameObject.tag} time: {Time.deltaTime}");
+        }
         if (other.gameObject.CompareTag("Bullet"))
         {
             EndLife();
             return; // Ignore other bullets
         }
 
-        if (other.gameObject.CompareTag("Player") && ownerTag != "Player")
+        if (weaponScript != null && ownerTag == "Player") {
+            HandlePlayerHitLogic(other);
+        }
+        
+        if(enemyCombat != null)
         {
-            Debug.Log($"Bullet hit Player {other.gameObject.name}");
-            HealthShieldSystem player = other.gameObject.GetComponentInParent<HealthShieldSystem>();
-            if (player != null)
-            {
-                player.TakeDamage(baseDamage);
-                Debug.Log($"[Player] Applied {baseDamage} damage.");
-                EndLife();
-                if(weaponScript != null)
-                {
-                    weaponScript.HitEnemy();
-                }
-                return;
-            }
+            HandleOtherHitLogic(other);
         }
 
+        EndLife();
+    }
+
+    private void HandlePlayerHitLogic(Collision other)
+    {
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            Debug.Log($"Bullet hit Enemy {other.gameObject.name}");
+            EnemyHealth enemy = other.gameObject.GetComponentInParent<EnemyHealth>();
+            if (enemy != null)
+            {
+                if (!enemy.isDead)
+                {
+                    enemy.TakeDamage(baseDamage, bulletColor);
+                    Debug.Log($"[Enemy] Applied {baseDamage} damage.");
+                    if (enemy.enemyType == bulletColor)
+                    {
+                        weaponScript.SuccessfulHitEnemy();
+                    }
+                    else
+                    { 
+                        weaponScript.UnsuccessfulHitEnemy();
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
+    private void HandleOtherHitLogic(Collision other)
+    {
         if (other.gameObject.CompareTag("Enemy"))
         {
             Debug.Log($"Bullet hit Enemy {other.gameObject.name}");
@@ -100,25 +128,27 @@ public class Bullet : MonoBehaviour
             {
                 enemy.TakeDamage(baseDamage, bulletColor);
                 Debug.Log($"[Enemy] Applied {baseDamage} damage.");
-                EndLife();
-                if(weaponScript != null)
-                {
-                    weaponScript.HitEnemy();
-                }
-                if(enemyCombat != null)
-                {
-                    enemyCombat.DidNotHitPlayer();
-                }
+                enemyCombat.DidNotHitPlayer();
+                // EndLife();
                 return;
             }
         }
-        if(enemyCombat != null)
+        if (other.gameObject.CompareTag("Player"))
         {
-            enemyCombat.DidNotHitPlayer();
+            Debug.Log($"Bullet hit Player {other.gameObject.name}");
+            HealthShieldSystem player = other.gameObject.GetComponentInParent<HealthShieldSystem>();
+            if (player != null)
+            {
+                player.TakeDamage(baseDamage);
+                Debug.Log($"[Player] Applied {baseDamage} damage.");
+                // EndLife();
+                return;
+            }
         }
-
-        EndLife();
+        enemyCombat.DidNotHitPlayer();
     }
+
+    
 
     private void EndLife(float duration = 0f)
     {

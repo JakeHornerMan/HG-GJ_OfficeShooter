@@ -12,12 +12,14 @@ public class WeaponScript : MonoBehaviour
     public Camera weaponCamera;
     public PlayerSounds playerSounds;
     private System.Random rng = new System.Random();
+    public ComboController comboController;
 
     [Header("Bullet Speed Settings")]
     [SerializeField] public float shootForce = 100f;
     [SerializeField] public float upwardForce = 0f;
 
     [Header("Gun Settings")]
+    [SerializeField] public float bulletDamage = 30f;
     [SerializeField] public bool isLeftGun = false;
     [SerializeField] public float timeBetweenShooting = 0.3f;
     [SerializeField] public float spread = 0.2f;
@@ -54,7 +56,7 @@ public class WeaponScript : MonoBehaviour
             hudManager.UpdateAmmoCount1(magazineSize, bulletsLeft, nextBullet);
         }
         else
-        { 
+        {
             hudManager.UpdateAmmoCount2(magazineSize, bulletsLeft, nextBullet);
         }
     }
@@ -134,7 +136,11 @@ public class WeaponScript : MonoBehaviour
         //Instantiate bullet
         RGBSettings firedBullet = magazineQueue.Dequeue();
         GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
-        currentBullet.GetComponent<Bullet>().SpawnBullet("Player", firedBullet, this, null); // Set the owner tag for the bullet
+        currentBullet.GetComponent<Bullet>()
+            .SpawnBullet(
+                "Player", firedBullet, this, null, Mathf.Round(bulletDamage * comboController.currentBonus)
+            )
+        ;
         playerSounds.PlayGunShotSound();
 
         //Add force to bullet
@@ -209,9 +215,16 @@ public class WeaponScript : MonoBehaviour
         Debug.Log($"Shot Reset complete, readyToShoot: {readyToShoot}");
     }
 
-    public void HitEnemy()
+    public void SuccessfulHitEnemy()
     {
         hudManager.ShowHitMarker();
+        comboController.PlusUpdateCombo();
+    }
+
+    public void UnsuccessfulHitEnemy()
+    {
+        hudManager.ShowHitMarker();
+        comboController.MinusUpdateCombo();
     }
 
     private Coroutine reloadCoroutine;
@@ -220,6 +233,14 @@ public class WeaponScript : MonoBehaviour
         Debug.Log($"Relaod called, readyToShoot: {readyToShoot}, bulletsLeft: {bulletsLeft}, reloading: {reloading}");
         if (reloadCoroutine == null && readyToShoot == true && reloading == false)
         {
+            if (isLeftGun)
+            {
+                hudManager.SetColorAndAmmoCountForReloading1();
+            }
+            else
+            { 
+                hudManager.SetColorAndAmmoCountForReloading2();
+            }
             reloadCoroutine = StartCoroutine(ReloadRoutine(reloadTime));
             ManageMagazine();
         }
