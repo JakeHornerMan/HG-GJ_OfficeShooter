@@ -1,28 +1,66 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyHealth : MonoBehaviour
 {
     [Header("References")]
     public EnemyHud enemyHud;
-    public EnemySound playerSounds;
+    public EnemySound enemySounds;
+    [SerializeField] private GameObject deathEffectParticles;
+    public EnemyBehaviour enemyBehaviour;
+    public Renderer[] renderers;
+
+    public Vector3 shadowRealm = new Vector3(100f, -100f, 100f);
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private RGBSettings enemyType;
     [SerializeField] private float damageMultiplier = 5f;
+    public bool isDead = true;
 
+    [Header("Reset Pooling Settings")]
+    public float resetTime = 3f;
 
     [Header("Current Values")]
     [SerializeField] private float currentHealth;
 
     void Awake()
     {
-        currentHealth = maxHealth;
-        enemyHud.SetColorHealthBar(enemyType);
+        renderers = this.gameObject.GetComponentsInChildren<Renderer>();
+        enemyBehaviour = GetComponent<EnemyBehaviour>();
+        AwakeEnemy(enemyType);
     }
+
+    public void AwakeEnemy(RGBSettings enemyColor = RGBSettings.BLUE)
+    {
+        // if (isDead) enemyColor = GetRandomColor();
+        isDead = false;
+        currentHealth = maxHealth;
+        enemyHud.SetColorHealthBar(enemyColor);
+        enemyHud.UpdateHealthBar(currentHealth, maxHealth);
+        enemyType = enemyColor;
+        enemyBehaviour.AwakeEnemyBehaviour();
+    }
+
+    // public RGBSettings GetRandomColor(bool includeNone = false)
+    // {
+    //     // Get all values
+    //     RGBSettings[] values = (RGBSettings[])System.Enum.GetValues(typeof(RGBSettings));
+
+    //     // If not including NONE, remove it from the pool
+    //     if (!includeNone)
+    //     {
+    //         values = System.Array.FindAll(values, v => v != RGBSettings.NONE);
+    //     }
+
+    //     int index = Random.Range(0, values.Length);
+    //     return values[index];
+    // }
 
     public void TakeDamage(float amount, RGBSettings bulletType)
     {
+        if (isDead) return;
+
         Debug.Log($"[HealthShieldSystem] {gameObject.name} TakeDamage called with amount: {amount}");
         if (amount <= 0) return;
         if (bulletType == enemyType)
@@ -30,7 +68,7 @@ public class EnemyHealth : MonoBehaviour
             Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
             amount *= damageMultiplier; // Double damage if the bullet type matches enemy type
         }
-        
+
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
         enemyHud.UpdateHealthBar(currentHealth, maxHealth);
@@ -51,7 +89,58 @@ public class EnemyHealth : MonoBehaviour
 
     private void Die()
     {
+        if (isDead) return;
+
+        isDead = true;
+
         Debug.Log($"{gameObject.name} died!");
+
+        if (deathEffectParticles != null)
+        {
+            deathEffectParticles.SetActive(true);
+            deathEffectParticles.GetComponent<ParticleSystem>().Play();
+            foreach (ParticleSystem ps in deathEffectParticles.GetComponentsInChildren<ParticleSystem>())
+            {
+                ps.Play();
+            }
+        }
+        StartCoroutine(FadeOutAndDisable());
+    }
+
+    private IEnumerator FadeOutAndDisable()
+    {
+        float elapsed = 0f;
+
+        //stops from attacking while dieing
+        enemyBehaviour.isReseting = true;
+
+        while (elapsed < resetTime)
+        {
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / resetTime);
+            foreach (var r in renderers)
+            {
+                foreach (var mat in r.materials)
+                {
+                    Color c = mat.color;
+                    c.a = alpha;
+                    mat.color = c;
+                }
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        DisableEnemy();
+    }
+
+    private void DisableEnemy()
+    {
+        transform.position = shadowRealm;
+        if (deathEffectParticles != null)
+            deathEffectParticles.SetActive(false);
+        enemyBehaviour.DisableEnemyBehaviour();
+        this.gameObject.SetActive(false);
     }
 
 }

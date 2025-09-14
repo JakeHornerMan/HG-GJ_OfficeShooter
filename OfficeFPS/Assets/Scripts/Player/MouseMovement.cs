@@ -27,6 +27,8 @@ public class MouseMovement : MonoBehaviour
     public float bounceDuration = 0.2f; // how fast the bounce happens
     public AnimationCurve bounceCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
+    public GameObject testEnemy;
+
     private Dictionary<MouseSpeed, float> mouseValues = new Dictionary<MouseSpeed, float>()
     {
         { MouseSpeed.Setting1, 100f },
@@ -51,6 +53,13 @@ public class MouseMovement : MonoBehaviour
     {
         Look();
         HandleSensitivityChange();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            testEnemy.SetActive(true);
+            testEnemy.GetComponent<EnemyHealth>().AwakeEnemy();
+            testEnemy.transform.position = new Vector3(0f, 2f, 0f);
+        }
     }
 
     #region Look Controls

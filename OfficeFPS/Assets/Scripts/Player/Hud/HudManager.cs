@@ -192,7 +192,7 @@ public class HudManager : MonoBehaviour
     {
         if (ammoCountText1 != null)
         {
-            ammoCountText1.text = $"{maxAmmo} / {currentAmmo}";
+            ammoCountText1.text = $"{currentAmmo} / {maxAmmo}";
             SetColorAmmoCount(bulletType, ammoCountText1, leftAmmoIndicator);
         }
     }
@@ -201,7 +201,7 @@ public class HudManager : MonoBehaviour
     {
         if (ammoCountText2 != null)
         {
-            ammoCountText2.text = $"{maxAmmo} / {currentAmmo}";
+            ammoCountText2.text = $"/ {currentAmmo} {maxAmmo}";
             SetColorAmmoCount(bulletType, ammoCountText2, rightAmmoIndicator);
         }
     }

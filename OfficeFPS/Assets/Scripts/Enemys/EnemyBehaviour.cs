@@ -9,6 +9,7 @@ public class EnemyBehaviour : MonoBehaviour
     public Transform player;
     public LayerMask whatIsGround, whatIsPlayer;
     public EnemyCombat enemyCombat;
+    public Rigidbody rb;
 
     [Header("Patroling")]
     public Vector3 walkPoint;
@@ -35,29 +36,48 @@ public class EnemyBehaviour : MonoBehaviour
     public bool isGunner = false;
     public bool isSniper = false;
 
+    [Header("Reset Pooling Settings")]
+    public bool isReseting = false;
+
     private void Awake()
     {
-        sightRangeHunting = sightRange * 2;
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyCombat = GetComponent<EnemyCombat>();
+        rb = GetComponent<Rigidbody>();
+    }
+
+    public void AwakeEnemyBehaviour()
+    {
+        isReseting = false;
+        sightRangeHunting = sightRange * 2;
         Debug.Log($"[EnemyBehaviour] : Awake | Found player: {player.name}, Agent assigned: {agent != null}");
         isHunting = false;
         isGunner = gameObject.name.Contains("Gunner");
         isSniper = gameObject.name.Contains("Sniper");
     }
 
+    public void DisableEnemyBehaviour()
+    {
+        isReseting = true;
+        isHunting = false;
+        isHunting = false;
+        lastPositionSet = false;
+        lastKnownPosition = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
+    }
+
     private void Update()
     {
+        if (isReseting)
+        {
+            return;
+        }
+
         //Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        // if (!playerInSightRange & isHunting)
-        // {
-        //     playerInSightRange = FindPlayer();    
-        //     Debug.Log($"[EnemyBehaviour] : isHunting | LongRangeChase playerInSightRange = {playerInSightRange}");
-        // }
 
         Debug.Log($"[EnemyBehaviour] : Update | sightRange: {playerInSightRange}, attackRange: {playerInAttackRange}");
 
@@ -143,7 +163,10 @@ public class EnemyBehaviour : MonoBehaviour
             Vector3 targetPoint = player.position;
             targetPoint.y = 1.5f;
 
-            enemyCombat.Attack(targetPoint);
+            if (!isReseting)
+            {
+                enemyCombat.Attack(targetPoint);
+            }
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
