@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public HudManager hudManager;
     public GameObject player;
     public PlayerSounds playerSound;
+    private LoadingScenes loadingScenes;
 
     [Header("Scene Changing")]
     public string nextSceneName;
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
         SetStartMissionLog();
         menuManager = GetComponent<MenuManager>();
         playerSound = player.GetComponent<PlayerSounds>();
+        loadingScenes = GetComponent<LoadingScenes>();
+        playerSound.PlayEnterLevel();
     }
 
     void Start()
@@ -72,6 +75,7 @@ public class GameManager : MonoBehaviour
         if (needKeyCard && !hasKeyCard)
         {
             Debug.Log("[GameManager] Cannot load scene: keycard is required but not collected.");
+            InformPlayerHud("Find the Key Card");
             return;
         }
 
@@ -79,6 +83,7 @@ public class GameManager : MonoBehaviour
         if (needToPickUpPackage && !hasPickedUpPackage)
         {
             Debug.Log("[GameManager] Cannot load scene: package pickup is required but not completed.");
+            InformPlayerHud("Collect the Package");
             return;
         }
 
@@ -86,6 +91,7 @@ public class GameManager : MonoBehaviour
         if (needToDeliverPackage && !hasDeliveredPackage)
         {
             Debug.Log("[GameManager] Cannot load scene: package delivery is required but not completed.");
+            InformPlayerHud("Deliver the Package");
             return;
         }
 
@@ -94,14 +100,22 @@ public class GameManager : MonoBehaviour
             (needToPickUpPackage && hasPickedUpPackage) ||
             (needToDeliverPackage && hasDeliveredPackage))
         {
-            Debug.Log($"[GameManager] Requirements met, loading scene: {nextSceneName}");
-            SceneManager.LoadScene(nextSceneName);
+            playerSound.PlayLeaveLevel();
+            
+            Invoke(nameof(LoadScene), 1f);
             return;
         }
 
         // If no requirements are active at all
         Debug.Log("[GameManager] No requirements set, loading next scene by default.");
         SceneManager.LoadScene(nextSceneName);
+    }
+
+    private void LoadScene()
+    {
+        Debug.Log($"[GameManager] Requirements met, loading scene: {nextSceneName}");
+        
+        loadingScenes.LoadScene(nextSceneName);
     }
 
     public void GotKeyCard()

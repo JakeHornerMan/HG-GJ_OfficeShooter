@@ -25,7 +25,9 @@ public class PlayerSounds : MonoBehaviour
         gunShotSound,
         reloadSound,
         reloadFinsishedSound,
-        infoNoise
+        infoNoise,
+        enterLevel,
+        leaveLevel
     ;
     [SerializeField] public SoundConfig[] hurtConfigs;
 
@@ -50,6 +52,8 @@ public class PlayerSounds : MonoBehaviour
     public void PlayReloadSound() => PlaySoundOnce(reloadSound);
     public void PlayReloadFinishedSound() => PlaySoundOnce(reloadFinsishedSound);
     public void PlayInformPlayer() => PlaySoundOnce(infoNoise);
+    public void PlayEnterLevel() => PlaySoundOnce(enterLevel);
+    public void PlayLeaveLevel() => PlaySoundOnce(enterLevel);
 
     //Random sound plays
     public void PlayHurtSound() => RandomPlaySound(hurtConfigs);
