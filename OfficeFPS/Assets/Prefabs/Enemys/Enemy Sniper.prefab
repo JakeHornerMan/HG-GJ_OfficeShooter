@@ -410,7 +410,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.027965391, y: 0.24449967, z: 0.06353804}
+  m_Size: {x: 0.04, y: 0.4, z: 0.07}
   m_Center: {x: -0.0016375004, y: 0.033000715, z: 0.018899085}
 --- !u!1 &7906415766635781877
 GameObject:
@@ -476,9 +476,10 @@ MonoBehaviour:
   enemyBehaviour: {fileID: 6003423811361270701}
   renderers: []
   shadowRealm: {x: 100, y: -100, z: 100}
-  maxHealth: 100
+  healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
+  shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
+  maxHealth: 90
   enemyType: 2
-  damageMultiplier: 5
   isDead: 1
   resetTime: 1.4
   currentHealth: 0
@@ -538,7 +539,8 @@ MonoBehaviour:
     m_Bits: 128
   enemyBehaviour: {fileID: 0}
   bulletPrefab: {fileID: 88591633456112314, guid: fe0805f945a53cb43b83d7f1698856b2, type: 3}
-  shootForce: 30
+  damage: 50
+  shootForce: 20
   spread: 1
   upwardsSpread: 0.5
 --- !u!195 &6661856249618538710

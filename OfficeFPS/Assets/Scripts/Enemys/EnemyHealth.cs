@@ -9,13 +9,13 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private GameObject deathEffectParticles;
     public EnemyBehaviour enemyBehaviour;
     public Renderer[] renderers;
-
     public Vector3 shadowRealm = new Vector3(100f, -100f, 100f);
+    public GameObject healthPrefab;
+    public GameObject shieldPrefab;
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private RGBSettings enemyType;
-    [SerializeField] private float damageMultiplier = 5f;
+    [SerializeField] public RGBSettings enemyType;
     public bool isDead = true;
 
     [Header("Reset Pooling Settings")]
@@ -57,7 +57,7 @@ public class EnemyHealth : MonoBehaviour
     //     return values[index];
     // }
 
-    public void TakeDamage(float amount, RGBSettings bulletType)
+    public void TakeDamage(float amount, RGBSettings bulletType, int comboVal)
     {
         if (isDead) return;
 
@@ -66,7 +66,14 @@ public class EnemyHealth : MonoBehaviour
         if (bulletType == enemyType)
         {
             Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
-            amount *= damageMultiplier; // Double damage if the bullet type matches enemy type
+            if (bulletType == RGBSettings.BLUE)
+            {
+                DropShield(comboVal);
+            }
+            if(bulletType == RGBSettings.GREEN)
+            {
+                DropHealth(comboVal);
+            }
         }
 
         currentHealth -= amount;
@@ -79,6 +86,52 @@ public class EnemyHealth : MonoBehaviour
             Die();
         }
     }
+
+    private void DropShield(int comboVal)
+    {
+        if (shieldPrefab == null)
+        {
+            Debug.LogWarning($"[EnemyHealth] {gameObject.name} has no shieldPrefab assigned!");
+            return;
+        }
+
+        // Spawn at enemy’s position + small offset (so it doesn’t clip into the ground)
+        Vector3 dropPos = transform.position;
+        dropPos.y += 0.5f;
+
+        GameObject shield = Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        HealPickup hp = shield.GetComponent<HealPickup>();
+        if (hp != null)
+        {
+            hp.amount += comboVal;    
+        }
+
+        Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Shield Pickup!");
+    }
+
+    private void DropHealth(int comboVal)
+    {
+        if (healthPrefab == null)
+        {
+            Debug.LogWarning($"[EnemyHealth] {gameObject.name} has no healthPrefab assigned!");
+            return;
+        }
+
+        Vector3 dropPos = transform.position;
+        dropPos.y += 0.5f;
+
+        GameObject shield = Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        HealPickup hp = shield.GetComponent<HealPickup>();
+        if (hp != null)
+        {
+            hp.amount += comboVal;    
+        }
+
+        Instantiate(healthPrefab, dropPos, Quaternion.identity);
+        Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Health Pickup!");
+    }
+
+    
 
     public void AddHealth(float amount)
     {

@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/JakeTestFloor.unity
     guid: 45824a0d07dfdc9429325e5fe40ca0b6
   - enabled: 1
-    path: Assets/Scenes/Floor_1.unity
-    guid: 1a5827881d9b28e4d8303c212d4ee2a3
+    path: Assets/Scenes/JakesPlace.unity
+    guid: 07c6c1ff5f779b64d90a1eb923f945db
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
