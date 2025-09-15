@@ -55,6 +55,7 @@ public class MouseMovement : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.isPaused) return;
         Look();
         HandleSensitivityChange();
         SearchForInteractable();

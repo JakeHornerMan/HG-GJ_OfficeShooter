@@ -6,10 +6,13 @@ public class GameManager : MonoBehaviour
 {
     [Header("References")]
     public MenuManager menuManager;
+    public LoadingScenes loadingScenes;
     public HudManager hudManager;
     public GameObject player;
-    public PlayerSounds playerSound;
-    private LoadingScenes loadingScenes;
+    private PlayerSounds playerSound;
+
+    public static GameManager Instance;
+    public bool isPaused = false;
 
     [Header("Scene Changing")]
     public string nextSceneName;
@@ -28,26 +31,23 @@ public class GameManager : MonoBehaviour
 
     [Header("Mission Log")]
     public List<string> missionLogs = new List<string>();
-
-    [Header("Pause Screen")]
-    public bool isPaused = false;
-
     void Awake()
     {
-        isPaused = true;
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
         hasKeyCard = false;
         hasPickedUpPackage = false;
         hasDeliveredPackage = false;
         SetStartMissionLog();
-        menuManager = GetComponent<MenuManager>();
         playerSound = player.GetComponent<PlayerSounds>();
-        loadingScenes = GetComponent<LoadingScenes>();
+        // hudManager = player.GetComponentInChildren<HudManager>();
         playerSound.PlayEnterLevel();
     }
 
     void Start()
     {
-        InformPlayerHud("Jake Test Area");    
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        InformPlayerHud(currentSceneName);
     }
 
 
@@ -55,18 +55,8 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            PauseGamne();
+            menuManager.PauseGame();
         }
-    }
-
-    private void PauseGamne()
-    {
-        Time.timeScale = 0f;
-    }
-
-    private void UnpauseGamne()
-    {
-        Time.timeScale = 1f;
     }
 
     public void LoadNextScene()

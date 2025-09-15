@@ -68,6 +68,7 @@ public class WeaponScript : MonoBehaviour
 
     private void MyInput()
     {
+        if (GameManager.Instance.isPaused) return;
         if (isLeftGun)
         {
             if (Input.GetButtonDown("Fire1") && readyToShoot && !reloading && bulletsLeft > 0)

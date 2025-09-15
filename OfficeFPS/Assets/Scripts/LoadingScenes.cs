@@ -29,16 +29,23 @@ public class LoadingScenes : MonoBehaviour
             // Red -> Green -> Blue gradient
             if (progressValue <= 0.5f)
             {
-                float t = progressValue / 0.5f; 
+                float t = progressValue / 0.5f;
                 LoadingBar.color = Color.Lerp(Color.red, Color.green, t);
             }
             else
             {
-                float t = (progressValue - 0.5f) / 0.5f; 
+                float t = (progressValue - 0.5f) / 0.5f;
                 LoadingBar.color = Color.Lerp(Color.green, Color.blue, t);
             }
 
             yield return null;
         }
+    }
+
+    public void RelaodScene()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        Debug.Log($"[LoadingScenes] Reloading scene: {currentSceneName}");
+        LoadScene(currentSceneName);
     }
 }

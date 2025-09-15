@@ -8,6 +8,6 @@ public class DeliverPackage : Interactable
         gameManager.DeliveredUpPackage();
         gameManager.AddToMissionLogs("You have Delivered the Package, Task completed now back to the basement with you!");
         gameManager.InformPlayerHud("Package Delivered");
-        hasInteracted = true;
+        // hasInteracted = true;
     }
 }
