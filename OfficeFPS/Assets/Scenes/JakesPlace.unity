@@ -5483,6 +5483,14 @@ PrefabInstance:
       propertyPath: hudManager
       value: 
       objectReference: {fileID: 2277435834314073651}
+    - target: {fileID: 6325314050342811897, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
+      propertyPath: needKeyCard
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325314050342811897, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
+      propertyPath: needToPickUpPackage
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8986108796885506933, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
       propertyPath: m_Camera
       value: 

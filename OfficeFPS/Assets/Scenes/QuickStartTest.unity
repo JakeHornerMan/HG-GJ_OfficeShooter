@@ -3931,6 +3931,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 734281378639769469, guid: 418df2c18d4085d43b7cd3bd7e9551ca, type: 3}
+      propertyPath: needKeyCard
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 734281378639769469, guid: 418df2c18d4085d43b7cd3bd7e9551ca, type: 3}
+      propertyPath: nextSceneName
+      value: JakePlace
+      objectReference: {fileID: 0}
+    - target: {fileID: 734281378639769469, guid: 418df2c18d4085d43b7cd3bd7e9551ca, type: 3}
+      propertyPath: needToPickUpPackage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 734281378639769469, guid: 418df2c18d4085d43b7cd3bd7e9551ca, type: 3}
+      propertyPath: needToDeliverPackage
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6094100160519683013, guid: 418df2c18d4085d43b7cd3bd7e9551ca, type: 3}
       propertyPath: m_NavMeshData
       value: 

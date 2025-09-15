@@ -786,16 +786,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b128d8dec1fe4b04f9dbaa0a5d7870a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuManager: {fileID: 0}
+  menuManager: {fileID: 6314327305013123771}
+  loadingScenes: {fileID: 4447397619570007148}
   hudManager: {fileID: 0}
   player: {fileID: 0}
-  playerSound: {fileID: 0}
+  isPaused: 0
   nextSceneName: JakeTestFloor
   needKeyCard: 0
   needToPickUpPackage: 0
   needToDeliverPackage: 1
   missionLogs: []
-  isPaused: 0
 --- !u!114 &6314327305013123771
 MonoBehaviour:
   m_ObjectHideFlags: 0
