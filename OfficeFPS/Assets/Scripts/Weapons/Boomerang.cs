@@ -6,11 +6,9 @@ public class Boomerang : MonoBehaviour
     [Header("References")]
     public Transform startPoint; // player hand, or wherever it should return
 
-    [Header("Flags")]
-    public bool isThrown = false;
-
-    [Header("Travel Settings")]
+    [Header("Boomerang Settings")]
     public float travelSpeed = 20f; // units per second
+    public float boomerangDamage = 15f;
 
     [Header("Rotation Settings")]
     [SerializeField] private Vector3 rotationAxis = Vector3.up;
@@ -19,7 +17,6 @@ public class Boomerang : MonoBehaviour
 
     [Header("RGB Settings")]
     private RGBSettings boomerangColor;
-    private GameObject chosenParticles;
 
     [Header("Materials")]
     public Material redMaterial;
@@ -30,6 +27,10 @@ public class Boomerang : MonoBehaviour
     public GameObject redParticles;
     public GameObject greenParticles;
     public GameObject blueParticles;
+    private GameObject chosenParticles;
+
+    [Header("Flags")]
+    public bool isThrown = false;
 
     private void Awake()
     {
@@ -40,28 +41,30 @@ public class Boomerang : MonoBehaviour
     {
         if (isThrown) return; // prevent multiple throws
 
+        boomerangColor = color;
         SetVisual(color);
 
         isThrown = true;
         string enemyName = enemy != null ? enemy.name : "none";
         Debug.Log($"[Boomerang] enemy: {enemyName}, hitPosition: {hitPosition}");
 
-        if (enemy != null)
-        {
-            hitPosition = enemy.transform.position; // lock onto enemy
-        }
-
         // 🔄 start rotation
         if (rotationCoroutine != null) StopCoroutine(rotationCoroutine);
         rotationCoroutine = StartCoroutine(RotateLoop());
 
-        StartCoroutine(ThrowRoutine(hitPosition));
+        StartCoroutine(ThrowRoutine(hitPosition, enemy));
     }
 
-    private IEnumerator ThrowRoutine(Vector3 targetPos)
+    private IEnumerator ThrowRoutine(Vector3 targetPos, GameObject enemy)
     {
-        // Go out
-        yield return MoveToPosition(targetPos);
+        if (enemy != null)
+        {
+            yield return MoveToEnemy(enemy);
+        }
+        else
+        {
+            yield return MoveToPosition(targetPos);
+        }
 
         // Come back
         yield return MoveToPositionHome();
@@ -79,6 +82,18 @@ public class Boomerang : MonoBehaviour
         Debug.Log("[Boomerang] returned to start, throw complete.");
     }
 
+    private IEnumerator MoveToEnemy(GameObject enemy)
+    {
+        Vector3 targetPos = enemy.transform.position + new Vector3(0f, 0.5f, 0f); 
+        while (Vector3.Distance(transform.position,  targetPos) > 0.05f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, travelSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        transform.position = targetPos; // snap exactly
+    }
+
     private IEnumerator MoveToPosition(Vector3 destination)
     {
         while (Vector3.Distance(transform.position, destination) > 0.05f)
@@ -90,7 +105,7 @@ public class Boomerang : MonoBehaviour
         transform.position = destination; // snap exactly
     }
 
-     private IEnumerator MoveToPositionHome()
+    private IEnumerator MoveToPositionHome()
     {
         while (Vector3.Distance(transform.position, startPoint.position) > 0.05f)
         {
@@ -111,29 +126,29 @@ public class Boomerang : MonoBehaviour
     }
 
     public void SetVisual(RGBSettings bulletType)
-    { 
+    {
         // Select material & particles based on enum
         Material chosenMat = null;
         chosenParticles = null;
 
         switch (bulletType)
         {
-            case RGBSettings.RED:   
-                chosenMat = redMaterial; 
+            case RGBSettings.RED:
+                chosenMat = redMaterial;
                 chosenParticles = redParticles;
                 break;
 
-            case RGBSettings.GREEN: 
-                chosenMat = greenMaterial; 
+            case RGBSettings.GREEN:
+                chosenMat = greenMaterial;
                 chosenParticles = greenParticles;
                 break;
 
-            case RGBSettings.BLUE:  
-                chosenMat = blueMaterial; 
+            case RGBSettings.BLUE:
+                chosenMat = blueMaterial;
                 chosenParticles = blueParticles;
                 break;
         }
-        
+
         if (chosenMat != null)
         {
             GetComponent<Renderer>().material = chosenMat;
@@ -153,5 +168,27 @@ public class Boomerang : MonoBehaviour
             Debug.LogWarning("[Bullet] No particles assigned for " + bulletType);
         }
 
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!isThrown) return;
+        Debug.Log("[Boomerang] Hit enemy: " + other.name);
+
+        if (other.CompareTag("Enemy"))
+        {
+            EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                Debug.Log("[Boomerang] Hit enemy: " + other.name);
+
+                // Example: deal damage
+                enemyHealth.BoomerangHit(boomerangDamage, boomerangColor); // adjust damage value
+            }
+            else
+            {
+                Debug.LogWarning("[Boomerang] Enemy has no EnemyHealth component: " + other.name);
+            }
+        }
     }
 }

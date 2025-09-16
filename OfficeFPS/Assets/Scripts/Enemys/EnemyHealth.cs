@@ -86,6 +86,32 @@ public class EnemyHealth : MonoBehaviour
             Die();
         }
     }
+    
+    public void BoomerangHit(float damage, RGBSettings color)
+    {
+        if (isDead) return;
+
+        
+
+        if (color == enemyType)
+        {
+            Debug.Log($"[BoomerangHit] {gameObject.name} Reseting Color");
+            enemyType = RGBSettings.NONE;
+            enemyHud.SetColorHealthBar(enemyType);
+        }
+
+        if (damage <= 0) return;
+
+        currentHealth -= damage;
+        currentHealth = Mathf.Max(currentHealth, 0);
+        enemyHud.UpdateHealthBar(currentHealth, maxHealth);
+        Debug.Log($"[BoomerangHit] {gameObject.name} Health took {damage} damage. Remaining Health: {currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
 
     private void DropShield(int comboVal)
     {
@@ -103,7 +129,7 @@ public class EnemyHealth : MonoBehaviour
         HealPickup hp = shield.GetComponent<HealPickup>();
         if (hp != null)
         {
-            hp.amount += comboVal;    
+            hp.amount += comboVal;
         }
 
         Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Shield Pickup!");

@@ -305,6 +305,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 745426694413929791}
     - target: {fileID: 6325314050342811897, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
+      propertyPath: needKeyCard
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6325314050342811897, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
       propertyPath: playerSound
       value: 
       objectReference: {fileID: 0}
@@ -312,6 +316,10 @@ PrefabInstance:
       propertyPath: loadingScenes
       value: 
       objectReference: {fileID: 6935791958679538664}
+    - target: {fileID: 6325314050342811897, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
+      propertyPath: needToDeliverPackage
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7148434030383506310, guid: f583f0ef8dc820a4d9f0b2252615ff0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
