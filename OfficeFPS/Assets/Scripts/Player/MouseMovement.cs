@@ -31,6 +31,12 @@ public class MouseMovement : MonoBehaviour
     public float bounceDuration = 0.2f; // how fast the bounce happens
     public AnimationCurve bounceCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
+    [Header("Boomerang Settings")]
+    public Boomerang boomerang; // assign in Inspector
+    public Transform boomerangSpawnPoint; // optional: hand position
+    private Boomerang currentBoomerang;
+    public float boomerangMaxDistance = 50f;
+
     public GameObject testEnemy;
 
     private Dictionary<MouseSpeed, float> mouseValues = new Dictionary<MouseSpeed, float>()
@@ -64,6 +70,46 @@ public class MouseMovement : MonoBehaviour
         {
             UseInteractable();
         }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ThrowBoomerang();
+        }
+    }
+
+    private void ThrowBoomerang()
+    {
+        if (boomerang.isThrown) return;
+        
+        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        RaycastHit hit;
+
+        GameObject targetEnemy = null;
+        Vector3 hitPosition = Vector3.zero;
+
+        if (Physics.Raycast(ray, out hit, boomerangMaxDistance))
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                // Store the enemy GameObject
+                targetEnemy = hit.collider.gameObject;
+                Debug.Log("[Boomerang] locked on enemy: " + targetEnemy.name);
+            }
+            else
+            {
+                // Store the exact hit position in world space
+                hitPosition = hit.point;
+                Debug.Log("[Boomerang] hit object at position: " + hitPosition);
+            }
+        }
+        else
+        {
+            // If nothing was hit, go to max distance along the ray
+            hitPosition = ray.origin + ray.direction * boomerangMaxDistance;
+            Debug.Log("[Boomerang] no hit, target point at max distance: " + hitPosition);
+        }
+
+        boomerang.StartBommerang(targetEnemy, hitPosition);
     }
 
     #region Look Controls
@@ -78,7 +124,7 @@ public class MouseMovement : MonoBehaviour
         yRotation += mouseX;
 
         float zRotation = HandleCameraTilt(playerMovement.moveX, playerMovement.isDodging);
-        
+
         this.transform.localRotation = Quaternion.Euler(0f, yRotation, 0f);
         playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, zRotation);
     }

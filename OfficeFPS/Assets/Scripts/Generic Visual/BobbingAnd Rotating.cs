@@ -3,6 +3,10 @@ using System.Collections;
 
 public class BobbingAndRotating : MonoBehaviour
 {
+    [Header("Enable Features")]
+    [SerializeField] private bool enableBobbing = true;
+    [SerializeField] private bool enableRotation = true;
+
     [Header("Bobbing Settings")]
     [SerializeField] private float bobHeight = 0.5f;
     [SerializeField] private float bobDuration = 1f; // time to go up or down
@@ -13,54 +17,67 @@ public class BobbingAndRotating : MonoBehaviour
 
     private Vector3 startPos;
     private Quaternion startRot;
-    private Coroutine bobCoroutine;
+    private Coroutine loopCoroutine;
 
     void Start()
     {
         startPos = transform.localPosition;
         startRot = transform.localRotation;
-        StartBobbing();
+
+        StartLoop();
     }
 
-    public void StartBobbing()
+    public void StartLoop()
     {
-        if (bobCoroutine != null) StopCoroutine(bobCoroutine);
-        bobCoroutine = StartCoroutine(BobLoop());
+        if (loopCoroutine != null) StopCoroutine(loopCoroutine);
+        loopCoroutine = StartCoroutine(EffectLoop());
     }
 
-    public void StopBobbing()
+    public void StopLoop()
     {
-        if (bobCoroutine != null)
+        if (loopCoroutine != null)
         {
-            StopCoroutine(bobCoroutine);
-            bobCoroutine = null;
-            transform.localPosition = startPos;
-            transform.localRotation = startRot;
+            StopCoroutine(loopCoroutine);
+            loopCoroutine = null;
         }
+
+        // reset to start
+        transform.localPosition = startPos;
+        transform.localRotation = startRot;
     }
 
-    private IEnumerator BobLoop()
+    private IEnumerator EffectLoop()
     {
         while (true)
         {
-            // --- Move UP and rotate 180 ---
+            // --- UP phase ---
             float elapsed = 0f;
             while (elapsed < bobDuration)
             {
                 float t = elapsed / bobDuration;
-                transform.localPosition = startPos + Vector3.up * Mathf.Lerp(0, bobHeight, t);
-                transform.localRotation = startRot * Quaternion.AngleAxis(Mathf.Lerp(0, rotationAmount, t), rotationAxis);
+
+                if (enableBobbing)
+                    transform.localPosition = startPos + Vector3.up * Mathf.Lerp(0, bobHeight, t);
+
+                if (enableRotation)
+                    transform.localRotation = startRot * Quaternion.AngleAxis(Mathf.Lerp(0, rotationAmount, t), rotationAxis);
+
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
-            // --- Move DOWN and rotate remaining 180 ---
+            // --- DOWN phase ---
             elapsed = 0f;
             while (elapsed < bobDuration)
             {
                 float t = elapsed / bobDuration;
-                transform.localPosition = startPos + Vector3.up * Mathf.Lerp(bobHeight, 0, t);
-                transform.localRotation = startRot * Quaternion.AngleAxis(rotationAmount + Mathf.Lerp(0, rotationAmount, t), rotationAxis);
+
+                if (enableBobbing)
+                    transform.localPosition = startPos + Vector3.up * Mathf.Lerp(bobHeight, 0, t);
+
+                if (enableRotation)
+                    transform.localRotation = startRot * Quaternion.AngleAxis(rotationAmount + Mathf.Lerp(0, rotationAmount, t), rotationAxis);
+
                 elapsed += Time.deltaTime;
                 yield return null;
             }
