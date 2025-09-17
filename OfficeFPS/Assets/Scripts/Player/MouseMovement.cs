@@ -8,6 +8,7 @@ public class MouseMovement : MonoBehaviour
     public GameObject playerCamera;
     public PlayerMovement playerMovement;
     public HudManager hudManager;
+    public HealthShieldSystem healthShieldSystem;
 
     [Header("Input Settings")]
     public float mouseSensitivity = 100f;
@@ -61,6 +62,11 @@ public class MouseMovement : MonoBehaviour
 
     void Update()
     {
+        if(deathCoroutine == null && healthShieldSystem.isDead)
+        {
+            CameraMoveDeath();
+        }
+        if (healthShieldSystem.isDead) return;
         if (GameManager.Instance.isPaused) return;
         Look();
         HandleSensitivityChange();
@@ -80,7 +86,7 @@ public class MouseMovement : MonoBehaviour
     private void ThrowBoomerang()
     {
         if (boomerang.isThrown) return;
-        
+
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         RaycastHit hit;
 
@@ -200,11 +206,11 @@ public class MouseMovement : MonoBehaviour
     {
         if (bounceCoroutine != null)
             StopCoroutine(bounceCoroutine);
-            
+
         bounceCoroutine = StartCoroutine(CameraBounce(bounceDuration));
     }
 
-   private IEnumerator CameraBounce(float duration)
+    private IEnumerator CameraBounce(float duration)
     {
         Vector3 originalPosition = playerCamera.transform.localPosition;
         Vector3 downPosition = originalPosition + Vector3.down * bounceDistance;
@@ -278,4 +284,42 @@ public class MouseMovement : MonoBehaviour
         Debug.Log($"Mouse setting changed to {currentSetting}, sensitivity = {mouseSensitivity}");
     }
     #endregion
+
+    private Coroutine deathCoroutine = null;
+    public void CameraMoveDeath()
+    {
+        deathCoroutine = StartCoroutine(CameraDeathRoutine());
+    }
+
+    private IEnumerator CameraDeathRoutine()
+    {
+        // Store starting values
+        Quaternion startRot = playerCamera.transform.localRotation;
+        Vector3 startPos = playerCamera.transform.localPosition;
+
+        // Target rotation: roll 90 degrees (on Z axis)
+        Quaternion targetRot = startRot * Quaternion.Euler(0f, 0f, 90f);
+
+        // Target position: move down by 1.5 units, shift right by 0.5 (x) and back by 0.5 (z)
+        Vector3 targetPos = startPos + new Vector3(0.5f, -1.5f, -0.5f);
+
+        float duration = 0.5f; // how long the effect lasts
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            // Smooth interpolation
+            playerCamera.transform.localRotation = Quaternion.Slerp(startRot, targetRot, t);
+            playerCamera.transform.localPosition = Vector3.Lerp(startPos, targetPos, t);
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Snap exactly to target
+        playerCamera.transform.localRotation = targetRot;
+        playerCamera.transform.localPosition = targetPos;
+    }
+
 }

@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
     public bool isPaused = false;
+    public bool isGameOver = false;
 
     [Header("Scene Changing")]
     public string nextSceneName;
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         if (Instance == null) Instance = this;
+        else if (Instance != this) Destroy(Instance);
         else Destroy(gameObject);
         hasKeyCard = false;
         hasPickedUpPackage = false;
@@ -42,6 +44,7 @@ public class GameManager : MonoBehaviour
         playerSound = player.GetComponent<PlayerSounds>();
         // hudManager = player.GetComponentInChildren<HudManager>();
         playerSound.PlayEnterLevel();
+        isGameOver = false;
     }
 
     void Start()
@@ -57,6 +60,12 @@ public class GameManager : MonoBehaviour
         {
             menuManager.PauseGame();
         }
+    }
+    
+    public void Death()
+    {
+        isGameOver = true;
+        menuManager.ShowDeathScreen();
     }
 
     public void LoadNextScene()
@@ -91,7 +100,7 @@ public class GameManager : MonoBehaviour
             (needToDeliverPackage && hasDeliveredPackage))
         {
             playerSound.PlayLeaveLevel();
-            
+
             Invoke(nameof(LoadScene), 1f);
             return;
         }

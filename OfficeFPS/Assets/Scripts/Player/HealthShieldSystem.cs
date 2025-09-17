@@ -10,6 +10,7 @@ public class HealthShieldSystem : MonoBehaviour
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float maxShield = 50f;
+    public bool isDead = false;
 
     [Header("Current Values")]
     [SerializeField] private float currentHealth;
@@ -27,6 +28,7 @@ public class HealthShieldSystem : MonoBehaviour
 
     void Awake()
     {
+        isDead = false;
         currentHealth = maxHealth;
         currentShield = maxShield;
         isInvincible = false;
@@ -43,6 +45,7 @@ public class HealthShieldSystem : MonoBehaviour
 
     public void TakeDamage(float amount, bool ignoreInvincibility = false)
     {
+        if (isDead) return;
         Debug.Log($"[HealthShieldSystem] TakeDamage called with amount: {amount}");
         if (amount <= 0 || (isInvincible && !ignoreInvincibility)) return;
 
@@ -65,11 +68,11 @@ public class HealthShieldSystem : MonoBehaviour
             hudManager.ShowHealthDamage();
             hudManager.UpdateHealthBar(currentHealth, maxHealth);
             playerSounds.PlayHurtSound();
+        }
 
-            if (currentHealth <= 0)
-            {
-                Die();
-            }
+         if (currentHealth <= 0)
+        {
+            Die();
         }
     }
 
@@ -93,6 +96,9 @@ public class HealthShieldSystem : MonoBehaviour
 
     private void Die()
     {
+        isDead = true;
+        playerSounds.PlayDeathSound();
+        GameManager.Instance.Death();
         Debug.Log($"{gameObject.name} died!");
     }
 }

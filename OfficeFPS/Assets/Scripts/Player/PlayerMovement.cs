@@ -9,12 +9,12 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     [SerializeField] private LayerMask[] groundMasks;
     private int combinedMask;
-
     public Camera playerCamera;
     private Rigidbody rb;
     public Transform box;
     public MouseMovement mouseMovement;
     public HealthShieldSystem healthShieldSystem;
+    public CapsuleCollider collider;
 
     public HudManager hudManager;
     public PlayerSounds playerSounds;
@@ -55,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (healthShieldSystem.isDead) return;
         GroundCheck();
         GetInput();
 
@@ -202,6 +203,12 @@ public class PlayerMovement : MonoBehaviour
     {
         isDodging = true;
         healthShieldSystem.isInvincible = true;
+
+        // ✅ Ignore collisions between Player and Enemy layer
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        Physics.IgnoreLayerCollision(playerLayer, enemyLayer, true);
+
         Debug.Log($"Dodge started | isDodging: {isDodging}");
 
         hudManager.ShowDodgeHud(dodgeDuration);
@@ -229,18 +236,21 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(moveDir * dodgeForce * curveMultiplier, ForceMode.VelocityChange);
 
             // ---- Camera FOV ----
-            // Ease to 65 at midpoint, then back to 60
             float fovCurve = Mathf.Sin(t * Mathf.PI); // goes 0 → 1 → 0 over the dodge
-            if(moveZ != 0) // only apply FOV change if moving forward/back
+            if (moveZ != 0) // only apply FOV change if moving forward/back
                 playerCamera.fieldOfView = Mathf.Lerp(baseFov, targetFov, fovCurve);
 
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
 
-        // Reset states
+        // ✅ Reset states
         playerCamera.fieldOfView = baseFov;
         healthShieldSystem.isInvincible = false;
+
+        // ✅ Re-enable collisions between Player and Enemy
+        Physics.IgnoreLayerCollision(playerLayer, enemyLayer, false);
+
         isDodging = false;
         hudManager.StartBoostFill(dodgeCooldown);
 

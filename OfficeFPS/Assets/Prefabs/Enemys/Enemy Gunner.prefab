@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4668377666107143580}
   - component: {fileID: 7267451392370673827}
   - component: {fileID: 7181238225477626338}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 2248432619248375012}
   - component: {fileID: 2418156685201175646}
   - component: {fileID: 5179670249827240650}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HealthContainer
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -200,7 +200,7 @@ GameObject:
   - component: {fileID: 4228034392452167444}
   - component: {fileID: 841912265550450422}
   - component: {fileID: 7902548429726195995}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy Gunner
   m_TagString: Enemy
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -310,6 +310,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   enemyBehaviour: {fileID: 0}
+  enemyHealth: {fileID: 0}
   bulletPrefab: {fileID: 88591633456112314, guid: fe0805f945a53cb43b83d7f1698856b2, type: 3}
   damage: 10
   shootForce: 10
@@ -484,7 +485,7 @@ GameObject:
   - component: {fileID: 8077354242179369200}
   - component: {fileID: 3473577264085532980}
   - component: {fileID: 1849490707686613298}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: HealthBar
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -557,7 +558,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6121350725559834760}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: AttackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -596,7 +597,7 @@ GameObject:
   - component: {fileID: 663227271712409773}
   - component: {fileID: 8558473406657849588}
   - component: {fileID: 6657743478929421610}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Canvas
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -713,13 +714,33 @@ PrefabInstance:
       propertyPath: looping
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1693928000138481147, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673837748644336001, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6161262115105213544, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
       propertyPath: m_Name
       value: Boom
       objectReference: {fileID: 0}
     - target: {fileID: 6161262115105213544, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6161262115105213544, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837783304200617506, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7833344368789797412, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7867210404949994609, guid: 66ba8d6f36dc9984390a23d43cc06818, type: 3}
       propertyPath: m_LocalScale.x

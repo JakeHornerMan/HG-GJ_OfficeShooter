@@ -27,7 +27,8 @@ public class PlayerSounds : MonoBehaviour
         reloadFinsishedSound,
         infoNoise,
         enterLevel,
-        leaveLevel
+        leaveLevel,
+        deathSound
     ;
     [SerializeField] public SoundConfig[] hurtConfigs;
 
@@ -54,6 +55,7 @@ public class PlayerSounds : MonoBehaviour
     public void PlayInformPlayer() => PlaySoundOnce(infoNoise);
     public void PlayEnterLevel() => PlaySoundOnce(enterLevel);
     public void PlayLeaveLevel() => PlaySoundOnce(enterLevel);
+    public void PlayDeathSound() => PlaySoundOnce(deathSound);
 
     //Random sound plays
     public void PlayHurtSound() => RandomPlaySound(hurtConfigs);

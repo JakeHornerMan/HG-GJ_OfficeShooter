@@ -4,6 +4,7 @@ public class MenuManager : MonoBehaviour
 {
     private LoadingScenes loadingScenes;
     public GameObject pauseMenu;
+    [SerializeField] public GameObject deathScreen;
 
     private void Awake()
     {
@@ -37,5 +38,13 @@ public class MenuManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Debug.Log("[MenuManager] RestartLevel");
+    }
+
+    public void ShowDeathScreen()
+    {
+        deathScreen.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Debug.Log("[MenuManager] PauseGame");
     }
 }

@@ -27,6 +27,7 @@ public class HudManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI infoText;
 
     [SerializeField] public GameObject ammoIconPrefab;
+    [SerializeField] public GameObject deathScreen;
 
     [SerializeField] public Transform magazineUIParent;
     private Queue<RGBSettings> magazineQueue = new Queue<RGBSettings>();
@@ -594,7 +595,7 @@ public class HudManager : MonoBehaviour
             interactUI.enabled = enable;
         }
     }
-    
+
     public void InformPlayer(string message)
     {
         if (infoText == null) return;

@@ -122,6 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da893b4c5c1d75949abe3d258c71c88b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableBobbing: 1
+  enableRotation: 1
   bobHeight: 0.5
   bobDuration: 1
   rotationAxis: {x: 0, y: 1, z: 0}
