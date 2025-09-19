@@ -12,6 +12,7 @@ public class EnemyHealth : MonoBehaviour
     public Vector3 shadowRealm = new Vector3(100f, -100f, 100f);
     public GameObject healthPrefab;
     public GameObject shieldPrefab;
+    [SerializeField] private MeshRenderer colorRenderer; 
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
@@ -23,6 +24,12 @@ public class EnemyHealth : MonoBehaviour
 
     [Header("Current Values")]
     [SerializeField] private float currentHealth;
+
+    [Header("Color Materials")]
+    [SerializeField] private int colorMaterialSlot = 1;
+    public Material redMaterial;
+    public Material greenMaterial;
+    public Material blueMaterial;
 
     void Awake()
     {
@@ -37,6 +44,7 @@ public class EnemyHealth : MonoBehaviour
         isDead = false;
         currentHealth = maxHealth;
         enemyHud.SetColorHealthBar(enemyColor);
+        SetEnemyColor(enemyColor);
         enemyHud.UpdateHealthBar(currentHealth, maxHealth);
         enemyType = enemyColor;
         enemyBehaviour.AwakeEnemyBehaviour();
@@ -57,6 +65,51 @@ public class EnemyHealth : MonoBehaviour
     //     return values[index];
     // }
 
+    public void SetEnemyColor(RGBSettings color)
+    {
+        if (colorRenderer == null)
+        {
+            Debug.LogWarning("[EnemyHealth] No colorRenderer assigned!");
+            return;
+        }
+
+        Material chosenMat = null;
+
+        switch (color)
+        {
+            case RGBSettings.RED:   chosenMat = redMaterial; break;
+            case RGBSettings.GREEN: chosenMat = greenMaterial; break;
+            case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
+            default:
+                Debug.LogWarning("[EnemyHealth] Unsupported color: " + color);
+                return;
+        }
+
+        if (chosenMat == null)
+        {
+            Debug.LogWarning($"[EnemyHealth] Missing material for {color}!");
+            return;
+        }
+
+        Material[] mats = colorRenderer.materials;
+        if (colorMaterialSlot >= 0 && colorMaterialSlot < mats.Length)
+        {
+            mats[colorMaterialSlot] = chosenMat;
+            colorRenderer.materials = mats;
+        }
+        else
+        {
+            Debug.LogWarning($"[EnemyHealth] Material slot {colorMaterialSlot} out of range on {colorRenderer.name}");
+        }
+
+        enemyType = color;
+        enemyHud.SetColorHealthBar(color);
+    }
+
+
+    
+
+
     public void TakeDamage(float amount, RGBSettings bulletType, int comboVal)
     {
         if (isDead) return;
@@ -70,7 +123,7 @@ public class EnemyHealth : MonoBehaviour
             {
                 DropShield(comboVal);
             }
-            if(bulletType == RGBSettings.GREEN)
+            if (bulletType == RGBSettings.GREEN)
             {
                 DropHealth(comboVal);
             }
