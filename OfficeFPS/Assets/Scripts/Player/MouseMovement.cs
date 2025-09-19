@@ -72,7 +72,7 @@ public class MouseMovement : MonoBehaviour
         HandleSensitivityChange();
         SearchForInteractable();
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             UseInteractable();
         }
@@ -92,6 +92,7 @@ public class MouseMovement : MonoBehaviour
 
         GameObject targetEnemy = null;
         Vector3 hitPosition = Vector3.zero;
+        RGBSettings enemyColor = GetRandomRGB();
 
         if (Physics.Raycast(ray, out hit, boomerangMaxDistance))
         {
@@ -99,23 +100,29 @@ public class MouseMovement : MonoBehaviour
             {
                 // Store the enemy GameObject
                 targetEnemy = hit.collider.gameObject;
-                Debug.Log("[Boomerang] locked on enemy: " + targetEnemy.name);
+                enemyColor = targetEnemy.GetComponent<EnemyHealth>() != null ? targetEnemy.GetComponent<EnemyHealth>().enemyType : GetRandomRGB();
+                Debug.Log("[Boomerang] locked on enemy: " + targetEnemy.name + " at time: " + Time.deltaTime);
             }
             else
             {
                 // Store the exact hit position in world space
                 hitPosition = hit.point;
-                Debug.Log("[Boomerang] hit object at position: " + hitPosition);
+                // Debug.Log("[Boomerang] hit object at position: " + hitPosition);
             }
         }
         else
         {
             // If nothing was hit, go to max distance along the ray
             hitPosition = ray.origin + ray.direction * boomerangMaxDistance;
-            Debug.Log("[Boomerang] no hit, target point at max distance: " + hitPosition);
+            // Debug.Log("[Boomerang] no hit, target point at max distance: " + hitPosition);
         }
 
-        boomerang.StartBommerang(targetEnemy, hitPosition);
+        boomerang.StartBommerang(targetEnemy, hitPosition, enemyColor);
+    }
+    private RGBSettings GetRandomRGB()
+    {
+        int random = Random.Range(0, 3); // RED, GREEN, BLUE only
+        return (RGBSettings)random;
     }
 
     #region Look Controls

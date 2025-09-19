@@ -152,6 +152,10 @@ public class Bullet : MonoBehaviour
                     {
                         weaponScript.SuccessfulHitEnemy();
                     }
+                    else if(enemy.enemyType == RGBSettings.NONE)
+                    {
+                        
+                    }
                     else
                     {
                         weaponScript.UnsuccessfulHitEnemy();

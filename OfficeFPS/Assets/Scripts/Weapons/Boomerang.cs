@@ -8,7 +8,10 @@ public class Boomerang : MonoBehaviour
 
     [Header("Boomerang Settings")]
     public float travelSpeed = 20f; // units per second
-    public float boomerangDamage = 15f;
+    public float boomerangDamage = 10f;
+
+    [Header("Arc Settings")]
+    public float arcDepth = 2f; // how far the boomerang arcs left/right
 
     [Header("Rotation Settings")]
     [SerializeField] private Vector3 rotationAxis = Vector3.up;
@@ -46,7 +49,7 @@ public class Boomerang : MonoBehaviour
 
         isThrown = true;
         string enemyName = enemy != null ? enemy.name : "none";
-        Debug.Log($"[Boomerang] enemy: {enemyName}, hitPosition: {hitPosition}");
+        Debug.Log($"[Boomerang] enemy: {enemyName}, hitPosition: {hitPosition}, @ time: {Time.time}");
 
         // 🔄 start rotation
         if (rotationCoroutine != null) StopCoroutine(rotationCoroutine);
@@ -82,28 +85,28 @@ public class Boomerang : MonoBehaviour
         Debug.Log("[Boomerang] returned to start, throw complete.");
     }
 
-    private IEnumerator MoveToEnemy(GameObject enemy)
-    {
-        Vector3 targetPos = enemy.transform.position + new Vector3(0f, 0.5f, 0f); 
-        while (Vector3.Distance(transform.position,  targetPos) > 0.05f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPos, travelSpeed * Time.deltaTime);
-            yield return null;
-        }
+    // private IEnumerator MoveToEnemy(GameObject enemy)
+    // {
+    //     // Vector3 targetPos = 
+    //     while (Vector3.Distance(transform.position,  enemy.transform.position + new Vector3(0f, 0.5f, 0f)) > 0.05f)
+    //     {
+    //         transform.position = Vector3.MoveTowards(transform.position, enemy.transform.position + new Vector3(0f, 0.5f, 0f), travelSpeed * Time.deltaTime);
+    //         yield return null;
+    //     }
 
-        transform.position = targetPos; // snap exactly
-    }
+    //     transform.position = enemy.transform.position + new Vector3(0f, 0.5f, 0f); // snap exactly
+    // }
 
-    private IEnumerator MoveToPosition(Vector3 destination)
-    {
-        while (Vector3.Distance(transform.position, destination) > 0.05f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, destination, travelSpeed * Time.deltaTime);
-            yield return null;
-        }
+    // private IEnumerator MoveToPosition(Vector3 destination)
+    // {
+    //     while (Vector3.Distance(transform.position, destination) > 0.05f)
+    //     {
+    //         transform.position = Vector3.MoveTowards(transform.position, destination, travelSpeed * Time.deltaTime);
+    //         yield return null;
+    //     }
 
-        transform.position = destination; // snap exactly
-    }
+    //     transform.position = destination; // snap exactly
+    // }
 
     private IEnumerator MoveToPositionHome()
     {
@@ -114,6 +117,59 @@ public class Boomerang : MonoBehaviour
         }
 
         transform.position = startPoint.position; // snap exactly
+    }
+
+    private IEnumerator MoveToEnemy(GameObject enemy)
+    {
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = enemy.transform.position + new Vector3(0f, 0.5f, 0f);
+
+        Vector3 midPoint = (startPos + targetPos) * 0.5f;
+        midPoint += transform.right * arcDepth; // curve outward
+
+        yield return MoveAlongArc(startPos, midPoint, targetPos);
+    }
+
+    private IEnumerator MoveToPosition(Vector3 destination)
+    {
+        Vector3 startPos = transform.position;
+
+        Vector3 midPoint = (startPos + destination) * 0.5f;
+        midPoint += transform.right * arcDepth; // curve outward
+
+        yield return MoveAlongArc(startPos, midPoint, destination);
+    }
+
+    // private IEnumerator MoveToPositionHome()
+    // {
+    //     Vector3 startPos = transform.position;
+    //     Vector3 destination = startPoint.position;
+
+    //     // Middle control point bends inward
+    //     Vector3 midPoint = (startPos + destination) * 0.5f;
+    //     midPoint -= transform.right * 2f; // arc the other way back
+
+    //     yield return MoveAlongArc(startPos, midPoint, destination);
+    // }
+
+    private IEnumerator MoveAlongArc(Vector3 start, Vector3 control, Vector3 end)
+    {
+        float t = 0f;
+        float duration = Vector3.Distance(start, end) / travelSpeed;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+
+            // Quadratic Bezier formula
+            Vector3 m1 = Vector3.Lerp(start, control, t);
+            Vector3 m2 = Vector3.Lerp(control, end, t);
+            transform.position = Vector3.Lerp(m1, m2, t);
+
+            yield return null;
+        }
+
+        transform.position = end; // snap exactly
     }
 
     private IEnumerator RotateLoop()
@@ -173,14 +229,15 @@ public class Boomerang : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!isThrown) return;
-        Debug.Log("[Boomerang] Hit enemy: " + other.name);
-
+        Debug.Log("[Boomerang] OnTriggerEnter: " + Time.time + " with " + other.name);
+        
         if (other.CompareTag("Enemy"))
         {
-            EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+            Debug.Log("[Boomerang] Hit enemy: " + other.name);
+            EnemyHealth enemyHealth = other.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                Debug.Log("[Boomerang] Hit enemy: " + other.name);
+                Debug.Log("[Boomerang] Got EnemyHealth: " + other.name);
 
                 // Example: deal damage
                 enemyHealth.BoomerangHit(boomerangDamage, boomerangColor); // adjust damage value

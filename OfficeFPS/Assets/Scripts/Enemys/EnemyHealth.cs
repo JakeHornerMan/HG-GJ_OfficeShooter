@@ -30,6 +30,7 @@ public class EnemyHealth : MonoBehaviour
     public Material redMaterial;
     public Material greenMaterial;
     public Material blueMaterial;
+    public Material resetMaterial;
 
     void Awake()
     {
@@ -71,6 +72,7 @@ public class EnemyHealth : MonoBehaviour
             case RGBSettings.RED: chosenMat = redMaterial; break;
             case RGBSettings.GREEN: chosenMat = greenMaterial; break;
             case RGBSettings.BLUE: chosenMat = blueMaterial; break;
+            case RGBSettings.NONE: chosenMat = resetMaterial; break;
             default:
                 Debug.LogWarning("[EnemyHealth] Unsupported color: " + color);
                 return;
@@ -128,10 +130,12 @@ public class EnemyHealth : MonoBehaviour
             Debug.Log($"[HealthShieldSystem] {gameObject.name} is weak to {bulletType} damage.");
             if (bulletType == RGBSettings.BLUE)
             {
+                Debug.Log($"[HealthShieldSystem] {gameObject.name} dropping pickup Shield.");
                 DropShield(comboVal);
             }
             if (bulletType == RGBSettings.GREEN)
             {
+                Debug.Log($"[HealthShieldSystem] {gameObject.name} dropping pickup Health.");
                 DropHealth(comboVal);
             }
         }
@@ -150,14 +154,19 @@ public class EnemyHealth : MonoBehaviour
     public void BoomerangHit(float damage, RGBSettings color)
     {
         if (isDead) return;
-
-
+        Debug.Log($"[BoomerangHit] {gameObject.name} BoomerangHit called with damage: {damage} and color: {color}");
 
         if (color == enemyType)
         {
             Debug.Log($"[BoomerangHit] {gameObject.name} Reseting Color");
             enemyType = RGBSettings.NONE;
+            SetEnemyColor(enemyType);
             enemyHud.SetColorHealthBar(enemyType);
+        }
+        else
+        {
+            Debug.Log($"[BoomerangHit] {gameObject.name} No Color Change, Double Damage");
+            damage *= 2; // double damage if same color
         }
 
         if (damage <= 0) return;
@@ -183,7 +192,7 @@ public class EnemyHealth : MonoBehaviour
 
         // Spawn at enemy’s position + small offset (so it doesn’t clip into the ground)
         Vector3 dropPos = transform.position;
-        dropPos.y += 0.5f;
+        dropPos.y += 1f;
 
         GameObject shield = Instantiate(shieldPrefab, dropPos, Quaternion.identity);
         HealPickup hp = shield.GetComponent<HealPickup>();
@@ -206,7 +215,7 @@ public class EnemyHealth : MonoBehaviour
         Vector3 dropPos = transform.position;
         dropPos.y += 0.5f;
 
-        GameObject shield = Instantiate(shieldPrefab, dropPos, Quaternion.identity);
+        GameObject shield = Instantiate(healthPrefab, dropPos, Quaternion.identity);
         HealPickup hp = shield.GetComponent<HealPickup>();
         if (hp != null)
         {

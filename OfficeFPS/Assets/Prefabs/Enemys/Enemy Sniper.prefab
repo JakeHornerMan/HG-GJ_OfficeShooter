@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 8130408073622836767}
   m_Layer: 8
   m_Name: 4
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5022,7 +5022,7 @@ GameObject:
   - component: {fileID: 6604750421047508206}
   m_Layer: 8
   m_Name: AttackPoint
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5135,7 +5135,7 @@ GameObject:
   - component: {fileID: 5411959905165553434}
   m_Layer: 8
   m_Name: Boom
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10160,7 +10160,7 @@ GameObject:
   - component: {fileID: 6567835673595589742}
   m_Layer: 8
   m_Name: 3
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15192,7 +15192,7 @@ MonoBehaviour:
   shadowRealm: {x: 100, y: -100, z: 100}
   healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
   shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
-  maxHealth: 60
+  maxHealth: 75
   enemyType: 2
   isDead: 1
   resetTime: 1.4
@@ -15203,6 +15203,7 @@ MonoBehaviour:
   redMaterial: {fileID: 2100000, guid: 2508cee9ab993294fb1d0fb97eac635c, type: 2}
   greenMaterial: {fileID: 2100000, guid: 0a7a1b890455d4e45bfa9d15d1c47d0e, type: 2}
   blueMaterial: {fileID: 2100000, guid: 3491b8a48741613468a30fb75d10d691, type: 2}
+  resetMaterial: {fileID: 2100000, guid: 17c46d75d53ca9f4fa4bd8e6f30c9f80, type: 2}
 --- !u!114 &8341501709690745791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15435,7 +15436,7 @@ GameObject:
   - component: {fileID: 2069838630122319406}
   m_Layer: 8
   m_Name: 2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20339,7 +20340,7 @@ GameObject:
   - component: {fileID: 4140381446448292169}
   m_Layer: 8
   m_Name: 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25289,9 +25290,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5009500055292172507, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
       propertyPath: m_Name
       value: SM_Enemy_Projector
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 5870537415180003967, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
       propertyPath: m_SortingLayer

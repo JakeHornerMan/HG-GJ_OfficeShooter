@@ -49,7 +49,7 @@ public class EnemyHud : MonoBehaviour
                     healthBar.color = Color.blue;
                     break;
                 default:
-                    healthBar.color = Color.white;
+                    healthBar.color = Color.black;
                     break;
             }
         }

@@ -861,7 +861,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   boomerang: {fileID: 6015428044219797043}
   boomerangSpawnPoint: {fileID: 1723034947007342285}
-  boomerangMaxDistance: 25
+  boomerangMaxDistance: 30
   testEnemy: {fileID: 0}
 --- !u!114 &8119683607252084801
 MonoBehaviour:
@@ -1789,7 +1789,7 @@ MonoBehaviour:
   comboController: {fileID: 8294935259887582424}
   shootForce: 100
   upwardForce: 0
-  bulletDamage: 30
+  bulletDamage: 25
   isLeftGun: 0
   timeBetweenShooting: 0.2
   spread: 0
@@ -2531,7 +2531,7 @@ MonoBehaviour:
   comboController: {fileID: 8294935259887582424}
   shootForce: 100
   upwardForce: 0
-  bulletDamage: 30
+  bulletDamage: 25
   isLeftGun: 1
   timeBetweenShooting: 0.2
   spread: 0
@@ -4333,8 +4333,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPoint: {fileID: 1723034947007342285}
-  travelSpeed: 20
-  boomerangDamage: 15
+  travelSpeed: 12
+  boomerangDamage: 10
+  arcDepth: 5
   rotationAxis: {x: 0, y: 1, z: 0}
   rotationSpeed: 360
   redMaterial: {fileID: 2100000, guid: 6af20d21fdb3e9846be9fcc5368045e6, type: 2}

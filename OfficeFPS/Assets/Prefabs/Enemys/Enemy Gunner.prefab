@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 263653062411161278}
   m_Layer: 8
   m_Name: AttackPoint
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 6600709364845374912}
   m_Layer: 8
   m_Name: 3
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5081,7 +5081,7 @@ MonoBehaviour:
   shadowRealm: {x: 100, y: -100, z: 100}
   healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
   shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
-  maxHealth: 45
+  maxHealth: 50
   enemyType: 1
   isDead: 1
   resetTime: 1.4
@@ -5092,6 +5092,7 @@ MonoBehaviour:
   redMaterial: {fileID: 2100000, guid: 40c68e2bac3d40b479e7b66c1634124e, type: 2}
   greenMaterial: {fileID: 2100000, guid: d595d6524be4253418e65739f58d4e38, type: 2}
   blueMaterial: {fileID: 2100000, guid: 3bf38142fb39ef7429eed943dde87684, type: 2}
+  resetMaterial: {fileID: 2100000, guid: 736d1f11d55642a46a74e2199a0c5b91, type: 2}
 --- !u!114 &5809463924076483091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5625,7 +5626,7 @@ GameObject:
   - component: {fileID: 7810650298533414727}
   m_Layer: 8
   m_Name: 2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10529,7 +10530,7 @@ GameObject:
   - component: {fileID: 4471531482488296979}
   m_Layer: 8
   m_Name: 1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15432,7 +15433,7 @@ GameObject:
   - component: {fileID: 4625975071425217808}
   m_Layer: 8
   m_Name: 4
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20335,7 +20336,7 @@ GameObject:
   - component: {fileID: 4231389701052018065}
   m_Layer: 8
   m_Name: Boom
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25309,9 +25310,17 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 04ff4459feb63834dbb3d2dc90e79368, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 5900564874027982844, guid: 04ff4459feb63834dbb3d2dc90e79368, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5900564874027982844, guid: 04ff4459feb63834dbb3d2dc90e79368, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
