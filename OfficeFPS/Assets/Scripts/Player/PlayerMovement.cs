@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     public float dodgeForce = 5f;
     public float dodgeDuration = 0.2f;
     public float dodgeCooldown = 3f;
-    [SerializeField] private AnimationCurve dodgeCurve = AnimationCurve.EaseInOut(1, 1, 1, 0.5f); 
+    [SerializeField] private AnimationCurve dodgeCurve = AnimationCurve.EaseInOut(1, 1, 1, 0.5f);
 
     [Header("Movement flags")]
     public bool isGrounded;
@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
     {
         moveX = Input.GetAxis("Horizontal");
         moveZ = Input.GetAxis("Vertical");
-            
+
     }
 
 
@@ -260,4 +260,19 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #endregion
+    public void SetSloMoVariables(bool isActive)
+    {
+        if (isActive)
+        {
+            moveSpeed = moveSpeed * 2;
+            dodgeForce = dodgeForce * 2;
+            dodgeDuration = dodgeDuration / 2;
+        }
+        else
+        {
+            moveSpeed = moveSpeed / 2;
+            dodgeForce = dodgeForce / 2;
+            dodgeDuration = dodgeDuration * 2;
+        }
+    }
 }

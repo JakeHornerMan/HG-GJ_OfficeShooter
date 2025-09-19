@@ -38,8 +38,22 @@ public class MouseMovement : MonoBehaviour
     private Boomerang currentBoomerang;
     public float boomerangMaxDistance = 50f;
 
-    public GameObject testEnemy;
+    [Header("Slow Motion Settings")]
+    public float slowMotionFactor = 0.5f; // game runs at half speed
+    public float slowMotionDuration = 3f; // real-time seconds
+    private bool isSlowMotionActive = false;
+    private bool canSlowMotion = true;
+    public float slowMotionCooldown = 10f;
 
+    [Header("Slow Motion Visuals")]
+    [SerializeField] private AnimationCurve colorCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    [SerializeField] private Gradient colorGradient;
+    public float maxContrast = 100f;
+
+    // Reference to post-processing (for grayscale)
+    private UnityEngine.Rendering.Volume postProcessingVolume;
+    [SerializeField] private UnityEngine.Rendering.Universal.ColorAdjustments colorAdjustments;
+    [SerializeField] private UnityEngine.Rendering.Universal.ColorCurves colorCurves;
     private Dictionary<MouseSpeed, float> mouseValues = new Dictionary<MouseSpeed, float>()
     {
         { MouseSpeed.Setting1, 100f },
@@ -58,11 +72,22 @@ public class MouseMovement : MonoBehaviour
     {
         mouseSensitivity = mouseValues[currentSetting];
         Cursor.lockState = CursorLockMode.Locked;
+
+        postProcessingVolume = Camera.main.GetComponent<UnityEngine.Rendering.Volume>();
+        if (postProcessingVolume != null)
+        {
+            postProcessingVolume.profile.TryGet(out colorAdjustments);
+            postProcessingVolume.profile.TryGet(out colorCurves);
+        }
+        else
+        {
+            Debug.LogWarning("No Volume component found on the main camera.");
+        }
     }
 
     void Update()
     {
-        if(deathCoroutine == null && healthShieldSystem.isDead)
+        if (deathCoroutine == null && healthShieldSystem.isDead)
         {
             CameraMoveDeath();
         }
@@ -72,7 +97,7 @@ public class MouseMovement : MonoBehaviour
         HandleSensitivityChange();
         SearchForInteractable();
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             UseInteractable();
         }
@@ -80,6 +105,11 @@ public class MouseMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             ThrowBoomerang();
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (!isSlowMotionActive && canSlowMotion) StartCoroutine(SlowMotionRoutine());
         }
     }
 
@@ -100,7 +130,7 @@ public class MouseMovement : MonoBehaviour
             {
                 // Store the enemy GameObject
                 targetEnemy = hit.collider.gameObject;
-                enemyColor = targetEnemy.GetComponent<EnemyHealth>() != null ? targetEnemy.GetComponent<EnemyHealth>().enemyType : GetRandomRGB();
+                enemyColor = targetEnemy.GetComponentInParent<EnemyHealth>() != null ? targetEnemy.GetComponentInParent<EnemyHealth>().enemyType : GetRandomRGB();
                 Debug.Log("[Boomerang] locked on enemy: " + targetEnemy.name + " at time: " + Time.deltaTime);
             }
             else
@@ -329,4 +359,55 @@ public class MouseMovement : MonoBehaviour
         playerCamera.transform.localPosition = targetPos;
     }
 
+    private IEnumerator SlowMotionRoutine()
+    {
+        isSlowMotionActive = true;
+        SetSloMoVariables(true);
+
+        // Enable slow motion
+        Time.timeScale = slowMotionFactor;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+        // Enable ColorAdjustments
+        if (colorAdjustments != null)
+            colorAdjustments.active = true;
+        // if (colorCurve != null)
+        //     colorCurve.SetAllOverridesTo(true);
+
+        yield return new WaitForSeconds(slowMotionDuration);
+
+        // Reset time
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f;
+
+        if (colorAdjustments != null)
+            colorAdjustments.active = false;
+        // if (colorCurve != null)
+        //     colorCurve.active = false;
+
+        SetSloMoVariables(false);
+        isSlowMotionActive = false;
+
+        Invoke(nameof(ResetSlowMotion), slowMotionCooldown);
+    }
+
+    public void SetSloMoVariables(bool isActive)
+    {
+        if (isActive)
+        {
+            mouseSensitivity = mouseSensitivity * 2;
+            playerMovement.SetSloMoVariables(true);
+        }
+        else
+        {
+            mouseSensitivity = mouseSensitivity / 2;
+            playerMovement.SetSloMoVariables(false);
+        }
+    }
+
+    public void ResetSlowMotion()
+    {
+        canSlowMotion = true;
+        Debug.Log("Slow motion ready again.");
+    }
 }

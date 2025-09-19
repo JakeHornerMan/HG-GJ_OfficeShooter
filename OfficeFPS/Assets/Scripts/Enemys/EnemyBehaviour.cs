@@ -10,6 +10,7 @@ public class EnemyBehaviour : MonoBehaviour
     public LayerMask whatIsGround, whatIsPlayer;
     public EnemyCombat enemyCombat;
     public Rigidbody rb;
+    public EnemyHealth enemyHealth;
 
     [Header("Patroling")]
     public Vector3 walkPoint;
@@ -44,6 +45,7 @@ public class EnemyBehaviour : MonoBehaviour
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         enemyCombat = GetComponent<EnemyCombat>();
+        enemyHealth = GetComponent<EnemyHealth>();
         rb = GetComponent<Rigidbody>();
     }
 
@@ -69,7 +71,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Update()
     {
-        if (isReseting)
+        if (isReseting || enemyHealth.isDead)
         {
             return;
         }

@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 5620991665955065660}
   - component: {fileID: 6116152351891680141}
   - component: {fileID: 458414598349088125}
+  - component: {fileID: 1090638282897801687}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -372,6 +373,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1090638282897801687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 135931237406895938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: ee4d7b06f1874804bbcc9999e1d7a68c, type: 2}
 --- !u!1 &330144069390194359
 GameObject:
   m_ObjectHideFlags: 0
@@ -862,7 +880,8 @@ MonoBehaviour:
   boomerang: {fileID: 6015428044219797043}
   boomerangSpawnPoint: {fileID: 1723034947007342285}
   boomerangMaxDistance: 30
-  testEnemy: {fileID: 0}
+  slowMotionFactor: 0.5
+  slowMotionDuration: 3
 --- !u!114 &8119683607252084801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3629,7 +3648,7 @@ GameObject:
   - component: {fileID: 6714836362987723608}
   - component: {fileID: 7716878006019408888}
   m_Layer: 0
-  m_Name: WeaponAndHUDCamera
+  m_Name: WeaponHUDCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

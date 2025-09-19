@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/JakesPlace.unity
-    guid: 07c6c1ff5f779b64d90a1eb923f945db
-  - enabled: 1
     path: Assets/Scenes/JakeTestFloor.unity
     guid: 45824a0d07dfdc9429325e5fe40ca0b6
+  - enabled: 1
+    path: Assets/Scenes/JakesPlace.unity
+    guid: 07c6c1ff5f779b64d90a1eb923f945db
   - enabled: 1
     path: Assets/Scenes/QuickStartTest.unity
     guid: dece3aa0c1a3b7b44b38d2decebebeef

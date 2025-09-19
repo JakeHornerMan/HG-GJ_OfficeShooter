@@ -266,6 +266,7 @@ public class EnemyHealth : MonoBehaviour
 
     public IEnumerator DeathCoroutine()
     {
+
         float duration = 1.5f;
         float elapsed = 0f;
 
@@ -304,7 +305,6 @@ public class EnemyHealth : MonoBehaviour
             }
         }
         yield return new WaitForSeconds(0.5f);
-
         DisableEnemy();
     }
 

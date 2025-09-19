@@ -85,28 +85,28 @@ public class Boomerang : MonoBehaviour
         Debug.Log("[Boomerang] returned to start, throw complete.");
     }
 
-    // private IEnumerator MoveToEnemy(GameObject enemy)
-    // {
-    //     // Vector3 targetPos = 
-    //     while (Vector3.Distance(transform.position,  enemy.transform.position + new Vector3(0f, 0.5f, 0f)) > 0.05f)
-    //     {
-    //         transform.position = Vector3.MoveTowards(transform.position, enemy.transform.position + new Vector3(0f, 0.5f, 0f), travelSpeed * Time.deltaTime);
-    //         yield return null;
-    //     }
+    private IEnumerator MoveToEnemy(GameObject enemy)
+    {
+        // Vector3 targetPos = 
+        while (Vector3.Distance(transform.position,  enemy.transform.position + new Vector3(0f, 0.5f, 0f)) > 0.05f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, enemy.transform.position + new Vector3(0f, 0.5f, 0f), travelSpeed * Time.deltaTime);
+            yield return null;
+        }
 
-    //     transform.position = enemy.transform.position + new Vector3(0f, 0.5f, 0f); // snap exactly
-    // }
+        transform.position = enemy.transform.position + new Vector3(0f, 0.5f, 0f); // snap exactly
+    }
 
-    // private IEnumerator MoveToPosition(Vector3 destination)
-    // {
-    //     while (Vector3.Distance(transform.position, destination) > 0.05f)
-    //     {
-    //         transform.position = Vector3.MoveTowards(transform.position, destination, travelSpeed * Time.deltaTime);
-    //         yield return null;
-    //     }
+    private IEnumerator MoveToPosition(Vector3 destination)
+    {
+        while (Vector3.Distance(transform.position, destination) > 0.05f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destination, travelSpeed * Time.deltaTime);
+            yield return null;
+        }
 
-    //     transform.position = destination; // snap exactly
-    // }
+        transform.position = destination; // snap exactly
+    }
 
     private IEnumerator MoveToPositionHome()
     {
@@ -119,26 +119,26 @@ public class Boomerang : MonoBehaviour
         transform.position = startPoint.position; // snap exactly
     }
 
-    private IEnumerator MoveToEnemy(GameObject enemy)
-    {
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = enemy.transform.position + new Vector3(0f, 0.5f, 0f);
+    // private IEnumerator MoveToEnemy(GameObject enemy)
+    // {
+    //     Vector3 startPos = transform.position;
+    //     Vector3 targetPos = enemy.transform.position + new Vector3(0f, 0.5f, 0f);
 
-        Vector3 midPoint = (startPos + targetPos) * 0.5f;
-        midPoint += transform.right * arcDepth; // curve outward
+    //     Vector3 midPoint = (startPos + targetPos) * 0.5f;
+    //     midPoint += transform.right * arcDepth; // curve outward
 
-        yield return MoveAlongArc(startPos, midPoint, targetPos);
-    }
+    //     yield return MoveAlongArc(startPos, midPoint, targetPos);
+    // }
 
-    private IEnumerator MoveToPosition(Vector3 destination)
-    {
-        Vector3 startPos = transform.position;
+    // private IEnumerator MoveToPosition(Vector3 destination)
+    // {
+    //     Vector3 startPos = transform.position;
 
-        Vector3 midPoint = (startPos + destination) * 0.5f;
-        midPoint += transform.right * arcDepth; // curve outward
+    //     Vector3 midPoint = (startPos + destination) * 0.5f;
+    //     midPoint += transform.right * arcDepth; // curve outward
 
-        yield return MoveAlongArc(startPos, midPoint, destination);
-    }
+    //     yield return MoveAlongArc(startPos, midPoint, destination);
+    // }
 
     // private IEnumerator MoveToPositionHome()
     // {
