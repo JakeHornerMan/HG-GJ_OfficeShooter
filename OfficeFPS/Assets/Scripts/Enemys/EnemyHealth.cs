@@ -12,7 +12,6 @@ public class EnemyHealth : MonoBehaviour
     public Vector3 shadowRealm = new Vector3(100f, -100f, 100f);
     public GameObject healthPrefab;
     public GameObject shieldPrefab;
-    [SerializeField] private MeshRenderer colorRenderer; 
 
     [Header("Health Settings")]
     [SerializeField] private float maxHealth = 100f;
@@ -27,6 +26,7 @@ public class EnemyHealth : MonoBehaviour
 
     [Header("Color Materials")]
     [SerializeField] private int colorMaterialSlot = 1;
+    [SerializeField] private MeshRenderer[] colorRenderers;
     public Material redMaterial;
     public Material greenMaterial;
     public Material blueMaterial;
@@ -35,41 +35,32 @@ public class EnemyHealth : MonoBehaviour
     {
         renderers = this.gameObject.GetComponentsInChildren<Renderer>();
         enemyBehaviour = GetComponent<EnemyBehaviour>();
-        AwakeEnemy(enemyType);
+        AwakeEnemy(GetRandomRGB());
+    }
+
+    private RGBSettings GetRandomRGB()
+    {
+        int random = Random.Range(0, 3); // RED, GREEN, BLUE only
+        return (RGBSettings)random;
     }
 
     public void AwakeEnemy(RGBSettings enemyColor = RGBSettings.BLUE)
     {
-        // if (isDead) enemyColor = GetRandomColor();
         isDead = false;
         currentHealth = maxHealth;
         enemyHud.SetColorHealthBar(enemyColor);
+        RestoreAlphaOnMaterials();
         SetEnemyColor(enemyColor);
         enemyHud.UpdateHealthBar(currentHealth, maxHealth);
         enemyType = enemyColor;
         enemyBehaviour.AwakeEnemyBehaviour();
     }
 
-    // public RGBSettings GetRandomColor(bool includeNone = false)
-    // {
-    //     // Get all values
-    //     RGBSettings[] values = (RGBSettings[])System.Enum.GetValues(typeof(RGBSettings));
-
-    //     // If not including NONE, remove it from the pool
-    //     if (!includeNone)
-    //     {
-    //         values = System.Array.FindAll(values, v => v != RGBSettings.NONE);
-    //     }
-
-    //     int index = Random.Range(0, values.Length);
-    //     return values[index];
-    // }
-
     public void SetEnemyColor(RGBSettings color)
     {
-        if (colorRenderer == null)
+        if (colorRenderers == null || colorRenderers.Length == 0)
         {
-            Debug.LogWarning("[EnemyHealth] No colorRenderer assigned!");
+            Debug.LogWarning("[EnemyHealth] No colorRenderers assigned!");
             return;
         }
 
@@ -77,9 +68,9 @@ public class EnemyHealth : MonoBehaviour
 
         switch (color)
         {
-            case RGBSettings.RED:   chosenMat = redMaterial; break;
+            case RGBSettings.RED: chosenMat = redMaterial; break;
             case RGBSettings.GREEN: chosenMat = greenMaterial; break;
-            case RGBSettings.BLUE:  chosenMat = blueMaterial; break;
+            case RGBSettings.BLUE: chosenMat = blueMaterial; break;
             default:
                 Debug.LogWarning("[EnemyHealth] Unsupported color: " + color);
                 return;
@@ -91,24 +82,40 @@ public class EnemyHealth : MonoBehaviour
             return;
         }
 
-        Material[] mats = colorRenderer.materials;
-        if (colorMaterialSlot >= 0 && colorMaterialSlot < mats.Length)
+        foreach (MeshRenderer rend in colorRenderers)
         {
-            mats[colorMaterialSlot] = chosenMat;
-            colorRenderer.materials = mats;
-        }
-        else
-        {
-            Debug.LogWarning($"[EnemyHealth] Material slot {colorMaterialSlot} out of range on {colorRenderer.name}");
+            if (rend == null) continue;
+
+            Material[] mats = rend.materials;
+            if (colorMaterialSlot >= 0 && colorMaterialSlot < mats.Length)
+            {
+                mats[colorMaterialSlot] = chosenMat;
+                rend.materials = mats;
+            }
+            else
+            {
+                Debug.LogWarning($"[EnemyHealth] Material slot {colorMaterialSlot} out of range on {rend.name}");
+            }
         }
 
         enemyType = color;
         enemyHud.SetColorHealthBar(color);
     }
 
-
-    
-
+    public void RestoreAlphaOnMaterials()
+    {
+        foreach (var rend in colorRenderers)
+        {
+            if (rend == null) continue;
+            foreach (var mat in rend.materials)
+            {
+                if (mat == null) continue;
+                Color c = mat.color;
+                c.a = 1f;
+                mat.color = c;
+            }
+        }
+    }
 
     public void TakeDamage(float amount, RGBSettings bulletType, int comboVal)
     {
@@ -139,12 +146,12 @@ public class EnemyHealth : MonoBehaviour
             Die();
         }
     }
-    
+
     public void BoomerangHit(float damage, RGBSettings color)
     {
         if (isDead) return;
 
-        
+
 
         if (color == enemyType)
         {
@@ -203,14 +210,14 @@ public class EnemyHealth : MonoBehaviour
         HealPickup hp = shield.GetComponent<HealPickup>();
         if (hp != null)
         {
-            hp.amount += comboVal;    
+            hp.amount += comboVal;
         }
 
         Instantiate(healthPrefab, dropPos, Quaternion.identity);
         Debug.Log($"[EnemyHealth] {gameObject.name} dropped a Health Pickup!");
     }
 
-    
+
 
     public void AddHealth(float amount)
     {
@@ -236,34 +243,7 @@ public class EnemyHealth : MonoBehaviour
                 ps.Play();
             }
         }
-        StartCoroutine(FadeOutAndDisable());
-    }
-
-    private IEnumerator FadeOutAndDisable()
-    {
-        float elapsed = 0f;
-
-        //stops from attacking while dieing
-        enemyBehaviour.isReseting = true;
-
-        while (elapsed < resetTime)
-        {
-            float alpha = Mathf.Lerp(1f, 0f, elapsed / resetTime);
-            foreach (var r in renderers)
-            {
-                foreach (var mat in r.materials)
-                {
-                    Color c = mat.color;
-                    c.a = alpha;
-                    mat.color = c;
-                }
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        DisableEnemy();
+        StartCoroutine(DeathCoroutine());
     }
 
     private void DisableEnemy()
@@ -274,5 +254,51 @@ public class EnemyHealth : MonoBehaviour
         enemyBehaviour.DisableEnemyBehaviour();
         this.gameObject.SetActive(false);
     }
+
+    public IEnumerator DeathCoroutine()
+    {
+        float duration = 1.5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            float newAlpha = Mathf.Lerp(1f, 0f, t);
+
+            foreach (var rend in colorRenderers)
+            {
+                if (rend == null) continue;
+
+                foreach (var mat in rend.materials)
+                {
+                    if (mat == null) continue;
+                    Color c = mat.color;
+                    c.a = newAlpha;
+                    mat.color = c;
+                }
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Ensure alpha = 0
+        foreach (var rend in colorRenderers)
+        {
+            if (rend == null) continue;
+            foreach (var mat in rend.materials)
+            {
+                if (mat == null) continue;
+                Color c = mat.color;
+                c.a = 0f;
+                mat.color = c;
+            }
+        }
+        yield return new WaitForSeconds(0.5f);
+
+        DisableEnemy();
+    }
+
+
 
 }

@@ -1792,7 +1792,7 @@ MonoBehaviour:
   bulletDamage: 30
   isLeftGun: 0
   timeBetweenShooting: 0.2
-  spread: 0.02
+  spread: 0
   reloadTime: 2
   timeBetweenBullets: 0.8
   magazineSize: 10
@@ -2534,7 +2534,7 @@ MonoBehaviour:
   bulletDamage: 30
   isLeftGun: 1
   timeBetweenShooting: 0.2
-  spread: 0.02
+  spread: 0
   reloadTime: 2
   timeBetweenBullets: 0.8
   magazineSize: 10

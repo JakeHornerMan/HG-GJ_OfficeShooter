@@ -15192,11 +15192,17 @@ MonoBehaviour:
   shadowRealm: {x: 100, y: -100, z: 100}
   healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
   shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
-  maxHealth: 90
+  maxHealth: 60
   enemyType: 2
   isDead: 1
   resetTime: 1.4
   currentHealth: 0
+  colorMaterialSlot: 1
+  colorRenderers:
+  - {fileID: 301701032908130004}
+  redMaterial: {fileID: 2100000, guid: 2508cee9ab993294fb1d0fb97eac635c, type: 2}
+  greenMaterial: {fileID: 2100000, guid: 0a7a1b890455d4e45bfa9d15d1c47d0e, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 3491b8a48741613468a30fb75d10d691, type: 2}
 --- !u!114 &8341501709690745791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25287,6 +25293,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Enemy_Projector
       objectReference: {fileID: 0}
+    - target: {fileID: 5870537415180003967, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870537415180003967, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c9a892e1187ce7840808da9b5355d30b, type: 2}
+    - target: {fileID: 5870537415180003967, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3491b8a48741613468a30fb75d10d691, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25295,6 +25313,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2057991580802330354}
   m_SourcePrefab: {fileID: 100100000, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+--- !u!23 &301701032908130004 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5870537415180003967, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
+  m_PrefabInstance: {fileID: 6149539746439376043}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5970986594974780224 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e13271c5038ce5b4a9da1fa06ce86250, type: 3}
@@ -25324,5 +25347,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9, y: 1.8, z: 0.66}
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 1, z: 0}

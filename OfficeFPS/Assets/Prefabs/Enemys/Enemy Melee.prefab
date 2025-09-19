@@ -85,7 +85,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &3795921809916970189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10066,11 +10066,18 @@ MonoBehaviour:
   shadowRealm: {x: 100, y: -100, z: 100}
   healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
   shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
-  maxHealth: 120
-  enemyType: 1
+  maxHealth: 30
+  enemyType: 0
   isDead: 1
   resetTime: 1.4
   currentHealth: 0
+  colorMaterialSlot: 0
+  colorRenderers:
+  - {fileID: 6961819614729858760}
+  - {fileID: 8261595025389268028}
+  redMaterial: {fileID: 2100000, guid: 20a7bcb97e42b4d499ee0a5924d07e06, type: 2}
+  greenMaterial: {fileID: 2100000, guid: 76526e775cbe3c64a81b91e4e02d5744, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 85ff5fe46a748d24a9a2d076e4d3f88e, type: 2}
 --- !u!114 &5051843905824189511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25288,9 +25295,17 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -8327174020597876748, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8327174020597876748, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f3e6138b0a14d8d49844af8502fdd0c9, type: 2}
+      objectReference: {fileID: 2100000, guid: 20a7bcb97e42b4d499ee0a5924d07e06, type: 2}
+    - target: {fileID: -8327174020597876748, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: aa43644292996b6448f24b128cf9d5d2, type: 2}
     - target: {fileID: -3447594190493145458, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -25308,9 +25323,17 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2185830981364167936, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2185830981364167936, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f3e6138b0a14d8d49844af8502fdd0c9, type: 2}
+      objectReference: {fileID: 2100000, guid: 20a7bcb97e42b4d499ee0a5924d07e06, type: 2}
+    - target: {fileID: 2185830981364167936, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: aa43644292996b6448f24b128cf9d5d2, type: 2}
     - target: {fileID: 4364551314147027818, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -25351,10 +25374,20 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.65, z: 1}
+  m_Size: {x: 1.3, y: 2, z: 1.3}
   m_Center: {x: -0.0016375004, y: 1, z: 0.018899085}
+--- !u!23 &6961819614729858760 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -8327174020597876748, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
+  m_PrefabInstance: {fileID: 7850536477425867068}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7743952927073140439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
+  m_PrefabInstance: {fileID: 7850536477425867068}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &8261595025389268028 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2185830981364167936, guid: cdeebda2934eec6429e595c76a3cd559, type: 3}
   m_PrefabInstance: {fileID: 7850536477425867068}
   m_PrefabAsset: {fileID: 0}

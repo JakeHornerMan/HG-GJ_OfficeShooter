@@ -5081,16 +5081,17 @@ MonoBehaviour:
   shadowRealm: {x: 100, y: -100, z: 100}
   healthPrefab: {fileID: 1252245976864944532, guid: 9bf29e6571e6da14dadfddd5e2fbe3b2, type: 3}
   shieldPrefab: {fileID: 4190955682441550359, guid: 72589376650d93f4893c0d760fcc1e3e, type: 3}
-  colorRenderer: {fileID: 2307550395246217049}
-  maxHealth: 60
-  enemyType: 0
+  maxHealth: 45
+  enemyType: 1
   isDead: 1
   resetTime: 1.4
   currentHealth: 0
   colorMaterialSlot: 1
-  redMaterial: {fileID: 2100000, guid: 1fdda607ec959844c9dfb0807b725d8a, type: 2}
-  greenMaterial: {fileID: 2100000, guid: 0ad1924bf81990d4f83927d5c9a4be2e, type: 2}
-  blueMaterial: {fileID: 2100000, guid: 63fb9dbf454760742a1123f52357a932, type: 2}
+  colorRenderers:
+  - {fileID: 2307550395246217049}
+  redMaterial: {fileID: 2100000, guid: 40c68e2bac3d40b479e7b66c1634124e, type: 2}
+  greenMaterial: {fileID: 2100000, guid: d595d6524be4253418e65739f58d4e38, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 3bf38142fb39ef7429eed943dde87684, type: 2}
 --- !u!114 &5809463924076483091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25293,9 +25294,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1503527977091078595, guid: 04ff4459feb63834dbb3d2dc90e79368, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 208548ee87fc6bc48b65ac2d6913b117, type: 2}
+    - target: {fileID: -1503527977091078595, guid: 04ff4459feb63834dbb3d2dc90e79368, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 0ad1924bf81990d4f83927d5c9a4be2e, type: 2}
+      objectReference: {fileID: 2100000, guid: d595d6524be4253418e65739f58d4e38, type: 2}
     - target: {fileID: 919132149155446097, guid: 04ff4459feb63834dbb3d2dc90e79368, type: 3}
       propertyPath: m_Name
       value: SM_Enemy_Photocopier
@@ -25345,7 +25350,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.9, y: 1.45, z: 0.9}
+  m_Size: {x: 1, y: 2, z: 1}
   m_Center: {x: 0, y: 0.75, z: 0}
 --- !u!4 &5525579071931811471 stripped
 Transform:

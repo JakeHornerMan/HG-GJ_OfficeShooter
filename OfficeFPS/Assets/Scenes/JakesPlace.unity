@@ -522,6 +522,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4804356803710054221, guid: be7ea198236460543bafacfea4571b72, type: 3}
+      propertyPath: enemyType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -797,6 +801,10 @@ PrefabInstance:
     - target: {fileID: 3335329674812087878, guid: 9251699c378d1704ea7ef7319d39956e, type: 3}
       propertyPath: m_Name
       value: Enemy Melee (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4842156874616256075, guid: 9251699c378d1704ea7ef7319d39956e, type: 3}
+      propertyPath: enemyType
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2000,6 +2008,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Sniper (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8298186671129712929, guid: f6b80f1b06e03ee409ede495632bc930, type: 3}
+      propertyPath: enemyType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2573,6 +2585,10 @@ PrefabInstance:
     - target: {fileID: 4709718207530487583, guid: be7ea198236460543bafacfea4571b72, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4804356803710054221, guid: be7ea198236460543bafacfea4571b72, type: 3}
+      propertyPath: enemyType
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5047,6 +5063,11 @@ MonoBehaviour:
   isDead: 1
   resetTime: 1.4
   currentHealth: 0
+  colorMaterialSlot: 0
+  colorRenderers: []
+  redMaterial: {fileID: 0}
+  greenMaterial: {fileID: 0}
+  blueMaterial: {fileID: 0}
 --- !u!114 &936021889040771685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20976,6 +20997,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Melee
       objectReference: {fileID: 0}
+    - target: {fileID: 4842156874616256075, guid: 9251699c378d1704ea7ef7319d39956e, type: 3}
+      propertyPath: enemyType
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -21235,6 +21260,10 @@ PrefabInstance:
     - target: {fileID: 4709718207530487583, guid: be7ea198236460543bafacfea4571b72, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4804356803710054221, guid: be7ea198236460543bafacfea4571b72, type: 3}
+      propertyPath: enemyType
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
